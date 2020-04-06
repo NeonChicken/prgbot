@@ -4,10 +4,6 @@ import re
 
 # Any command starting with $ will execute its corresponding function here.
 
-# Simply return a test message.
-def test(message):
-    return 'Test'
-
 # Take any number of arguments and return one of them randomly.
 def lotto(message):
     if len(message.content.split()) < 2:
