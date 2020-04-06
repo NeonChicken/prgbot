@@ -41,7 +41,10 @@ def teams(message):
         elif len(options) == 0:
             return "It's a bit difficult making teams without any people, isn't it?"
         elif len(options) < num_teams:
-            return "More teams than there are people? Well, that's not going to work..."
+            if len(options) == 1:
+                return "{} teams for {} person? Well, that's not going to work...".format(num_teams, len(options))
+            else:
+                return "{} teams for {} people? Well, that's not going to work...".format(num_teams, len(options))
     
     
     random.shuffle(options)
