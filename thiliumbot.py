@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import discord
 import command_handlers as commands
 from secrets import token
