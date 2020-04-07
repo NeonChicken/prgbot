@@ -59,3 +59,7 @@ def teams(message):
         response += 'Team {}: '.format(idx+1) + ', '.join(teams[idx]) + '\n'
 
     return response
+
+def insultme(message):
+    with open('./insults.txt') as textfile:
+        return random.choice(list(textfile)).capitalize()

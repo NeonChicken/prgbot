@@ -28,4 +28,8 @@ async def on_message(message):
         response = commands.teams(message)
         await message.channel.send(response)
 
+    if message.content.startswith('$insultme'):
+        response = commands.insultme(message)
+        await message.channel.send(response)
+
 client.run(token)
