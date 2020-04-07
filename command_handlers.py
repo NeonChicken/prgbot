@@ -14,7 +14,7 @@ def lotto(message):
 # First argument specifies number of teams. Other arguments are player names.
 # Players are then randomly divided over equally large teams.
 def teams(message):
-    channel_team_re = re.compile('\$teams (?P<n_teams>\d+) \"(?P<channel_name>.+)\"')
+    channel_team_re = re.compile('\?teams (?P<n_teams>\d+) \"(?P<channel_name>.+)\"')
 
     if channel_team_re.match(message.content):
         num_teams = int(channel_team_re.search(message.content).group('n_teams'))

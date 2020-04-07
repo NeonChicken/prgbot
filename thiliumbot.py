@@ -20,15 +20,15 @@ async def on_message(message):
     if '69' in message.content.split():
         await message.channel.send('nice')
 
-    if message.content.startswith('$lotto'):
+    if message.content.startswith('?lotto'):
         response = commands.lotto(message)
         await message.channel.send(response)
         
-    if message.content.startswith('$teams'):
+    if message.content.startswith('?teams'):
         response = commands.teams(message)
         await message.channel.send(response)
 
-    if message.content.startswith('$insultme'):
+    if message.content.startswith('?insultme'):
         response = commands.insultme(message)
         await message.channel.send(response)
 
