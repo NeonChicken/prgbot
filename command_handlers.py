@@ -61,5 +61,7 @@ def teams(message):
     return response
 
 def insultme(message):
-    with open('./insults.txt') as textfile:
-        return random.choice(list(textfile)).capitalize()
+    with open('./insults.txt') as insults:
+        with open('./adjectives.txt') as adjectives:
+            response = random.choice(list(adjectives)).capitalize().rstrip() + ' ' + random.choice(list(insults))
+            return response
