@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import discord
+
 import command_handlers as commands
+from command_handlers import handler_dict
 from secrets import token
 
 client = discord.Client()
+prefix = '?'
 
 @client.event
 async def on_ready():
@@ -14,22 +17,13 @@ async def on_message(message):
     
     if message.author == client.user:
         return
-    else:
-        print('Message received:\n{}'.format(message.content))
 
     if '69' in message.content.split():
         await message.channel.send('nice')
 
-    if message.content.startswith('?lotto'):
-        response = commands.lotto(message)
-        await message.channel.send(response)
-        
-    if message.content.startswith('?teams'):
-        response = commands.teams(message)
-        await message.channel.send(response)
-
-    if message.content.startswith('?insultme'):
-        response = commands.insultme(message)
-        await message.channel.send(response)
+    for cmd in handler_dict.keys():
+        if message.content.startswith(prefix + cmd):
+            response = handler_dict[cmd](message)
+            await message.channel.send(response)
 
 client.run(token)

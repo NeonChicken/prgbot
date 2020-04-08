@@ -65,3 +65,10 @@ def insultme(message):
         with open('./adjectives.txt') as adjectives:
             response = random.choice(list(adjectives)).capitalize().rstrip() + ' ' + random.choice(list(insults))
             return response
+
+# Any command must be listed here with its string to call it and the corresponding function.
+handler_dict = {
+    'lotto':lotto,
+    'teams':teams,
+    'insultme':insultme,
+}
