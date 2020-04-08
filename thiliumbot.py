@@ -29,7 +29,6 @@ async def on_message(message):
             print('Command "{}" not implemented'.format(command))
             return
         
-        response = module.respond(message)
-        await message.channel.send(response)
+        await module.run(message)
 
 client.run(token)

@@ -4,7 +4,7 @@ import itertools
 
 # First argument specifies number of teams. Other arguments are player names.
 # Players are then randomly divided over equally large teams.
-def respond(message):
+async def run(message):
     channel_team_re = re.compile('\?teams (?P<n_teams>\d+) \"(?P<channel_name>.+)\"')
 
     if channel_team_re.match(message.content):
@@ -15,23 +15,35 @@ def respond(message):
         if voice_channels:
             options = [member.name for member in voice_channels[0].members if member.bot is False]
         else:
-            return 'Could not find that channel'
+            response = 'Could not find that channel'
+            await message.channel.send(response)
+            return
     else:
         try:
             num_teams = int(message.content.split()[1])
             options = message.content.split()[2:]
         except (ValueError, IndexError):
-            return "Give me the number of teams you need and the names of the people you are with. I'll make you some teams."
+            response = "Give me the number of teams you need and the names of the people you are with. I'll make you some teams."
+            await message.channel.send(response)
+            return
 
         if num_teams < 1:
-            return "How do you expect me to make {} teams?".format(num_teams)
+            response = "How do you expect me to make {} teams?".format(num_teams)
+            await message.channel.send(response)
+            return
         elif len(options) == 0:
-            return "It's a bit difficult making teams without any people, isn't it?"
+            response = "It's a bit difficult making teams without any people, isn't it?"
+            await message.channel.send(response)
+            return
         elif len(options) < num_teams:
             if len(options) == 1:
-                return "{} teams for {} person? Well, that's not going to work...".format(num_teams, len(options))
+                response = "{} teams for {} person? Well, that's not going to work...".format(num_teams, len(options))
+                await message.channel.send(response)
+                return
             else:
-                return "{} teams for {} people? Well, that's not going to work...".format(num_teams, len(options))
+                response = "{} teams for {} people? Well, that's not going to work...".format(num_teams, len(options))
+                await message.channel.send(response)
+                return
     
     
     random.shuffle(options)
@@ -49,4 +61,4 @@ def respond(message):
     for idx in range(num_teams):
         response += 'Team {}: '.format(idx+1) + ', '.join(teams[idx]) + '\n'
 
-    return response
+    await message.channel.send(response)
