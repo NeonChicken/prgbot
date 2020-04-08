@@ -1,19 +1,10 @@
 import random
-import itertools
 import re
-
-# Any command starting with $ will execute its corresponding function here.
-
-# Take any number of arguments and return one of them randomly.
-def lotto(message):
-    if len(message.content.split()) < 2:
-        return "I can't choose anything if you don't give me any options!"
-    options = message.content.split()[1:]
-    return random.choice(options)
+import itertools
 
 # First argument specifies number of teams. Other arguments are player names.
 # Players are then randomly divided over equally large teams.
-def teams(message):
+def respond(message):
     channel_team_re = re.compile('\?teams (?P<n_teams>\d+) \"(?P<channel_name>.+)\"')
 
     if channel_team_re.match(message.content):
@@ -59,16 +50,3 @@ def teams(message):
         response += 'Team {}: '.format(idx+1) + ', '.join(teams[idx]) + '\n'
 
     return response
-
-def insultme(message):
-    with open('./insults.txt') as insults:
-        with open('./adjectives.txt') as adjectives:
-            response = random.choice(list(adjectives)).capitalize().rstrip() + ' ' + random.choice(list(insults))
-            return response
-
-# Any command must be listed here with its string to call it and the corresponding function.
-handler_dict = {
-    'lotto':lotto,
-    'teams':teams,
-    'insultme':insultme,
-}
