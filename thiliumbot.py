@@ -3,7 +3,6 @@ import importlib
 
 import discord
 
-import command_handlers
 from secrets import token
 
 client = discord.Client()
