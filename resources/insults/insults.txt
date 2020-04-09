@@ -219,6 +219,7 @@ mof
 moffelaar
 moffenhoer
 mongool
+mongol
 morsebel
 mosselhoer
 muilezel
@@ -237,7 +238,6 @@ oen
 olijfneuker
 olieboer
 okselschimmel
-onderkruipsel
 ossenkop
 ossenlul
 ouwehoedendoos
@@ -356,7 +356,6 @@ trut
 tuinslang
 tyfuslijder
 uienreet
-vaginavarken
 varkensholbezoeker
 vaselinevriend
 variétéhoer
