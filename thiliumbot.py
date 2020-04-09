@@ -1,8 +1,12 @@
+#!/usr/bin/env python3
+import importlib
+
 import discord
-import command_handlers as commands
+
 from secrets import token
 
 client = discord.Client()
+prefix = '?'
 
 @client.event
 async def on_ready():
@@ -13,22 +17,18 @@ async def on_message(message):
     
     if message.author == client.user:
         return
-    else:
-        print('Message received:\n{}'.format(message.content))
 
     if '69' in message.content.split():
         await message.channel.send('nice')
 
-    if message.content.startswith('$test'):
-        response = commands.test(message)
-        await message.channel.send(response)
-
-    if message.content.startswith('$lotto'):
-        response = commands.lotto(message)
-        await message.channel.send(response)
+    if message.content.startswith(prefix):
+        command = message.content.split()[0][1:]
+        try:
+            module = importlib.import_module('.' + command, 'command_handlers')
+        except ModuleNotFoundError:
+            print('Command "{}" not implemented'.format(command))
+            return
         
-    if message.content.startswith('$teams'):
-        response = commands.teams(message)
-        await message.channel.send(response)
+        await module.run(message)
 
 client.run(token)
