@@ -22,7 +22,7 @@ We will be using the Python package [discord.py](https://discordpy.readthedocs.i
 7. In the menu on the left, click 'Bot'.
 8. Click 'Add Bot' and confirm you want to do this by clicking 'Yes, do it!'.
 9.  Under 'Token', click 'Copy'.
-10. Paste your token bvetween the quotes in the `secrets.py` file you made earlier, so that the contents of the file look like this:<br>`token = 'yourtoken'`.
+10. Paste your token between the quotes in the `secrets.py` file you made earlier, so that the contents of the file look like this:<br>```token = 'yourtoken'```
 11. Back in your Application settings on the Discord website, click on 'OAuth2' and check the 'bot' box under 'Scopes'. 
 12. Under 'Bot permissions', you can specify which permissions your bot will need. If you are only going to run the bot on your own Discord server, it won't hurt to give your bot admin rights. To do so, check the 'Administrator' box.
 13. Under 'Scopes, you will now see your bot's invite link. Paste this link in the address bar of your browser to invite the bot. Choose your server and click 'Continue'. Check the 'Administrator' box and click 'Authorize'. Click 'I am not a robot' to continue.
