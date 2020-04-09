@@ -14,7 +14,7 @@ We will be using the Python package [discord.py](https://discordpy.readthedocs.i
 ### Running your own test server
 
 1. Clone or download this repository to your computer.
-2. In the root of the repository, create a file called `secrets.py` and paste the following line into it: `token = ''`.
+2. In the root of the repository, create a file called `secrets.py` and paste the following line into it:<br>`token = ''`
 3. In Discord, create your own Discord server where you want to test the bot, if you haven't already done so.
 4. Log in to your Discord account on discordapp.com/developers.
 5. Click 'New Application'.
