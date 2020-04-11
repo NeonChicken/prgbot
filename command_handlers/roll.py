@@ -2,8 +2,8 @@ import random
 
 # Take any number of arguments and return one of them randomly.
 async def run(message):
-    with open('./resources/insults/insults.txt') as insults:
-        with open('./resources/insults/adjectives.txt') as adjectives:
+    with open('./resources/insults/insults-eng.txt') as insults:
+        with open('./resources/insults/adjectives-eng.txt') as adjectives:
             if len(message.content.split()) < 2:
                 six = random.randint(1, 6)
                 response = "Rolling six-sided die: {}".format(six)
