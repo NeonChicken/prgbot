@@ -7,4 +7,4 @@ async def run(message):
 def generate_insult():
     with open('./resources/insults/insults-eng.txt') as insults:
         with open('./resources/insults/adjectives-eng.txt') as adjectives:
-            return random.choice(list(adjectives)).rstrip() + ' ' + random.choice(list(insults))
+            return random.choice(list(adjectives)).rstrip() + ' ' + random.choice(list(insults)).rstrip()
