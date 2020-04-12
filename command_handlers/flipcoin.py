@@ -1,19 +1,14 @@
 import random
 
-# Take any number of arguments and return one of them randomly.
+# Flip a coin and send the result.
 async def run(message):
     with open('./resources/insults/insults-eng.txt') as insults:
         with open('./resources/insults/adjectives-eng.txt') as adjectives:
             if len(message.content.split()) < 2:
-                coinint = random.randint(1, 2)
-                if coinint == 1:
-                    coin = "heads."
-                elif coinint == 2:
-                    coin = "tails."
-                response = "It's {}".format(coin)
+                response = "It's {}!".format(random.choice(['heads','tails']))
                 await message.channel.send(response)
                 return
-            if len(message.content.split()) >= 2:
+            else:
                 curse = random.choice(list(adjectives)).rstrip() + ' ' + random.choice(list(insults))
                 response = "Don't put anything after the command, you {}".format(curse)
                 await message.channel.send(response)
