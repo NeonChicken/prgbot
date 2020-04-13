@@ -8,6 +8,6 @@ async def run(message):
         await message.channel.send(response)
         return
     else:
-        response = "Don't put anything after the command, you {}".format(generate_insult())
+        response = "Don't put anything after the command, you {}!".format(generate_insult())
         await message.channel.send(response)
         return
