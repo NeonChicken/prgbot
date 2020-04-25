@@ -1,0 +1,23 @@
+{
+    "players": [
+        {
+            "name": "null"
+        },
+        {
+            "name": "NeonChicken#9779",
+            "name_at_save": "NeonChicken",
+            "hp": 3,
+            "max_hp": 10,
+            "lvl": 7,
+            "xp": 2344,
+            "gem": 15,
+            "inv": [
+                {
+                    "modifier": "```diff\n! Uncommon```",
+                    "sword": "```\nClaymore```"
+                }
+            ],
+            "items": []
+        }
+    ]
+}

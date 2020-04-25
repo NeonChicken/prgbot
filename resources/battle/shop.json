@@ -1,0 +1,17 @@
+{
+    "shop_items": [
+        {
+            "items": [
+                {
+                    "name": "Stew"
+                },
+                {
+                    "name": "Bread"
+                },
+                {
+                    "name": "Bread"
+                }
+            ]
+        }
+    ]
+}
