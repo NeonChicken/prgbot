@@ -1,7 +1,6 @@
 import random
 import asyncio
 import json
-from .insultme import generate_insult
 import os
 import io
 

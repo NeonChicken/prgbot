@@ -29,7 +29,8 @@ We will be using the Python package [discord.py](https://discordpy.readthedocs.i
 14. Now, start your bot server with `python3 PRGbot.py`, and you can use to bot in your Discord server!
 
 ## Authors
-- **Marco Breemhaar** - *Initial work* - www.marcobreemhaar.nl
+- **Marco Breemhaar** - *Framework* - www.marcobreemhaar.nl
+- **Luuk van Dort** - *Commands and games* - www.neondeluxe.nl/
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
