@@ -5,7 +5,7 @@ import os
 import io
 
 prefix = '?'
-
+# t
 timeout_time = 10.0  # message.author response time in seconds
 wait_time = 2  # time in between bot messages TO DO --> change to 3 or 2, used for testing
 max_player_level = 20  # must be at least 10
