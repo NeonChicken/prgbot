@@ -5,8 +5,8 @@ import os
 import io
 
 prefix = '?'
-# t
-timeout_time = 10.0  # message.author response time in seconds
+
+timeout_time = 30.0  # message.author response time in seconds
 wait_time = 2  # time in between bot messages TO DO --> change to 3 or 2, used for testing
 max_player_level = 20  # must be at least 10
 crafting_cost = 20  # cost of crafting a new sword
@@ -37,12 +37,16 @@ class monster:
 
 monster_list = dict(
     goblin=monster("Goblin",    5, 0, 2, 2, 7, 50, 100, .5),
+    snake=monster("Snake",      4, 0, 2, 2, 7, 50, 100, .5),
+    spider=monster("Spider",    3, 0, 2, 2, 6, 50, 75, .5),
+    gnome=monster("Gnome",      4, 0, 2, 2, 7, 50, 100, .5),
+    dwarf=monster("Dwarf",      5, 0, 2, 2, 7, 50, 100, .5),
     imp=monster("Imp",          3, 0, 1, 0, 5, 25, 50, .5),
     wurm=monster("Wurm",        2, 0, 1, 0, 5, 25, 50, .3),
     ogre=monster("Ogre",        7, 0, 3, 3, 12, 75, 150, .5),
     orc=monster("Orc",          10, 0, 4, 5, 15, 100, 200, .3),
     golem=monster("Gold Golem", 10, 1, 4, 10, 70, 150, 350, .1),
-    demon=monster("Demon",      20, 0, 6, 20, 80, 300, 500, .02)
+    rare=monster("Rare Reptile", 5, 0, 4, 20, 80, 300, 500, .005)
 )
 monsters = []
 monsters_weight = []
@@ -51,8 +55,11 @@ for k in monster_list:
     monsters_weight.append(monster_list[k].odds)
 
 monster_list_lvl_2 = dict(
-    dragon=monster("Dragon",    30, 1, 7, 20, 100, 500, 1000, .02),
-    demon=monster("Demon",      20, 0, 6, 20, 70, 300, 500, .05)
+    dragon=monster("Dragon",    30, 1, 7, 20, 100, 300, 1000, .02),
+    tiefling=monster("Tiefling", 8, 0, 4, 3, 17, 200, 350, .5),
+    elf=monster("Elf",          12, 0, 4, 6, 19, 200, 400, .5),
+    reaper=monster("Reaper",    18, 1, 6, 12, 32, 200, 550, .09),
+    demon=monster("Demon",      20, 0, 6, 20, 52, 200, 500, .05)
 )
 monsters2 = []
 monsters2_weight = []
@@ -69,9 +76,9 @@ class modifier:
 
 
 modifier_list = dict(
-    legendary=modifier("```css\n[Legendary]```", 20, .01, 10),
+    legendary=modifier("```css\n[Legendary]```", 20, .01, 5),
     rare=modifier("```ini\n[Rare]```", 10, .05, 3),
-    uncommon=modifier("```diff\n! Curious```", 4, .25, 2),
+    uncommon=modifier("```diff\n! Curious```", 4, .15, 2),
     fine=modifier("```diff\n! Fine```", 4, .35, 1),
     quirky=modifier("```diff\n! Quirky```", 4, .35, 1),
     common=modifier("```\nCommon```", 1, .50, 0),
@@ -181,7 +188,7 @@ async def run(client, message):
                      "\n**items** - shows your food items" \
                      "\n**shop** - shows items in shop" \
                      "\n**shop** (**buy**/**sell**) (*item name*) - buy or sell items" \
-                     "\n**eat** (*item name*) - eat an item" \
+                     "\n**consume** (*item name*) - consume an item" \
                      "\n**craft** - craft a sword for **{}** :gem:".format(crafting_cost)
         return response
 
@@ -742,7 +749,7 @@ async def run(client, message):
                                                         return
 
                     # Eat (food items)
-                    elif 'eat' in '{}'.format(message.content.lower()):
+                    elif 'consume' in '{}'.format(message.content.lower()):
                         for p in contents['players']:
                             if str(message.author.id) == str(p['name']):
                                 if len(message.content.split()) > 2:
