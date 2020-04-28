@@ -13,7 +13,7 @@ crafting_cost = 20  # cost of crafting a new sword
 max_items = 5  # maximum amount of items in player inventory
 max_shop_items = 10  # maximum amount of items in shop inventory
 level_bonus_hp = 1  # adds this number to max_hp on level up
-level_bonus_gem_multiplier = 6  # multiplies this number to current level to calculate gem reward
+level_bonus_gem_multiplier = 4  # multiplies this number to current level to calculate gem reward
 
 
 def generate_insult():
@@ -101,7 +101,7 @@ class sword:
 
 
 sword_list = dict(
-    excalibur=sword("```diff\n- Excalibur```",      30, 100, 500, 0.001),
+    excalibur=sword("```diff\n- Excalibur```",      10, 40, 500, 0.001),
     dawnbreaker=sword("```css\n[Dawn breaker]```",  7, 25, 200, .0025),
     banisher=sword("```css\n[Banisher]```",         5, 20, 200, .004),
     katana=sword("```css\n[Katana]```",             5, 20, 200, .004),
@@ -818,6 +818,10 @@ async def run(client, message):
                     else:
                         await message.channel.send(help_msg())
 
+# todo battle other players found in save
+# todo speedfight > wait_time is 0
+# todo bulk crafting
+# todo delete save file with confirmation
 # todo info per class. Monster info, sword info, modifier info etc.
 # Shop: buy <-> sell
 # Armor items with received_damage modifier
