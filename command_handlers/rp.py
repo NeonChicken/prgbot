@@ -45,7 +45,7 @@ monster_list = dict(
     wurm=monster("Wurm",        2, 0, 1, 0, 5, 25, 50, .3),
     ogre=monster("Ogre",        7, 0, 3, 3, 12, 75, 150, .5),
     orc=monster("Orc",          10, 0, 4, 5, 15, 100, 200, .3),
-    golem=monster("Gold Golem", 10, 1, 4, 10, 70, 150, 350, .1),
+    golem=monster("Gold Golem", 10, 1, 4, 10, 70, 150, 350, .01),
     rare=monster("Rare Reptile", 5, 0, 4, 20, 80, 300, 500, .005)
 )
 monsters = []
@@ -101,14 +101,14 @@ class sword:
 
 
 sword_list = dict(
-    excalibur=sword("```diff\n- Excalibur```",      10, 40, 500, 0.001),
-    dawnbreaker=sword("```css\n[Dawn breaker]```",  7, 25, 200, .0025),
-    banisher=sword("```css\n[Banisher]```",         5, 20, 200, .004),
-    katana=sword("```css\n[Katana]```",             5, 20, 200, .004),
-    broadsword=sword("```\nBroadsword```",          2, 7, 20, .15),
-    claymore=sword("```\nClaymore```",              1, 4, 15, .25),
-    sabre=sword("```\nSabre```",                    0, 5, 18, .20),
-    knife=sword("```\nKnife```",                    0, 3, 12, .30)
+    excalibur=sword("```diff\n- Excalibur```",      10, 40, 100, 0.001),
+    dawnbreaker=sword("```css\n[Dawn breaker]```",  7, 25, 75, .0025),
+    banisher=sword("```css\n[Banisher]```",         5, 20, 50, .004),
+    katana=sword("```css\n[Katana]```",             5, 20, 50, .004),
+    broadsword=sword("```\nBroadsword```",          2, 7, 6, .15),
+    claymore=sword("```\nClaymore```",              1, 4, 5, .25),
+    sabre=sword("```\nSabre```",                    0, 5, 5, .20),
+    knife=sword("```\nKnife```",                    0, 3, 3, .30)
 )
 swords = []
 swords_weight = []
@@ -355,8 +355,8 @@ async def run(client, message):
                                                             .format(message.author.mention,
                                                                     r_monster[0].name))
                                                         await asyncio.sleep(wait_time)
-                                                        lost_gems = int(p['gem'] * .25)
-                                                        p['gem'] = int(p['gem'] * .75)
+                                                        lost_gems = int(p['gem'] * .4)
+                                                        p['gem'] = int(p['gem'] * .6)
 
                                                         await message.channel.send("*{} died and lost **{}** :gem:*"
                                                                                    .format(message.author.mention,
@@ -413,7 +413,7 @@ async def run(client, message):
                         for p in contents['players']:
                             if str(message.author.id) == str(p['name']):
                                 for l in p['inv']:
-                                    await message.channel.send("{} has {}{}"
+                                    await message.channel.send("{} has a {}{}"
                                                                .format(message.author.mention, l['modifier'],
                                                                        l['sword']))
 
@@ -808,6 +808,27 @@ async def run(client, message):
                                                                "to use after the command".format(
                                         message.author.mention))
 
+                    # todo Give items/gems
+                    elif 'give' in '{}'.format(message.content.lower()):
+                        for p in contents['players']:
+                            if str(message.author.id) == str(p['name']):
+                                if len(message.content.split()) > 2:
+                                    player_receiver = message.content.split()[2].lower()
+                                    # gem_or_item =  message.content.split()[3].lower()
+                                    if str(message.author.id) in str(player_receiver):
+                                        await message.channel.send("Hey {}! You can't give something to *yourself*, you {}!".format(message.author.mention, generate_insult()))
+                                        # amount = message.content.split()[4].lower()
+                                    elif str(player_receiver) not in str(contents['players']):
+                                        await message.channel.send("{}, {} has no save file yet!".format(message.author.mention, player_receiver))
+
+                    # todo Trade swords
+                    elif 'trade' in '{}'.format(message.content.lower()):
+                        print('')
+
+                    # todo Battle other players found in save
+                    elif 'battle' in '{}'.format(message.content.lower()):
+                        print('')
+
                     # Test
                     elif 'test' in '{}'.format(message.content.lower()):
                         print('')
@@ -818,7 +839,7 @@ async def run(client, message):
                     else:
                         await message.channel.send(help_msg())
 
-# todo battle other players found in save
+# todo fishing
 # todo speedfight > wait_time is 0
 # todo bulk crafting
 # todo delete save file with confirmation
