@@ -130,9 +130,9 @@ item_list = dict(
     apple=item("Apple", 1, 1, 2, 0.6),
     bread=item("Bread", 3, 2, 3, 0.5),
     beef=item("Beef", 5, 4, 5, 0.35),
-    fish=item("Fish", 4, 4, 5, 0.35),
-    cheese=item("Cheese", 7, 9, 8, 0.35),
-    beer=item("Beer", 3, 3, 4, 0.45),
+    fish=item("Fish", 4, 3, 5, 0.35),
+    beer=item("Beer", 3, 2, 4, 0.45),
+    cheese=item("Cheese", 7, 9, 8, 0.30),
     stew=item("Stew", 10, 15, 15, 0.2),
     salad=item("Honey Salad", 12, 20, 20, 0.05)
 )
@@ -483,9 +483,11 @@ async def run(client, message):
                                                                 for m in modifiers:
                                                                     if old_modifier in str(m.name):
                                                                         sell_value = sell_value + m.price
+                                                                        break
                                                                 for s in swords:
                                                                     if old_sword in str(s.name):
                                                                         sell_value = sell_value + s.price
+                                                                        break
                                                                 await message.channel.send(
                                                                     "{}, you sold your {}{} for **{}** :gem:\n Now you have a {}{}"
                                                                         .format(message.author.mention,
@@ -839,7 +841,9 @@ async def run(client, message):
                     else:
                         await message.channel.send(help_msg())
 
+
 # todo fishing
+# todo battle cries op basis van je message
 # todo speedfight > wait_time is 0
 # todo bulk crafting
 # todo delete save file with confirmation
