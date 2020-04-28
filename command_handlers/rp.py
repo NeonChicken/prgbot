@@ -791,6 +791,7 @@ async def run(client, message):
                                                                     if str(split) in str(t).lower():
                                                                         number = p['items'].index(t)
                                                                         del (p['items'][number])
+                                                                        break
                                                                 with open('./resources/battle/log.json', 'w') as f:
                                                                     json.dump(contents, f, indent=4)
                                                                 return
