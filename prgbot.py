@@ -10,7 +10,7 @@ from secrets import token
 from discord.ext import commands
 
 client = discord.Client()
-prefix = '?'
+prefix = '!'
 playing = ['Random Games']
 
 

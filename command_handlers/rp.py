@@ -4,7 +4,7 @@ import json
 import os
 import io
 
-prefix = '?'
+prefix = '!'
 
 timeout_time = 30.0  # message.author response time in seconds
 wait_time = 2  # time in between bot messages TO DO --> change to 3 or 2, used for testing
