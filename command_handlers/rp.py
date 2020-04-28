@@ -689,6 +689,7 @@ async def run(client, message):
                                                                             if str(split_item) in str(t).lower():
                                                                                 number = p['items'].index(t)
                                                                                 del (p['items'][number])
+                                                                                break
                                                                         p['gem'] = p['gem'] + i.sell_price
                                                                         with open('./resources/battle/log.json',
                                                                                   'w') as f:
