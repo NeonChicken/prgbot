@@ -296,13 +296,14 @@ async def run(client, message):
                                                         await asyncio.sleep(wait_time)
 
                                                         # Experience points
-                                                        xp = random.randrange(r_monster[0].min_xp, r_monster[0].max_xp)
-                                                        p['xp'] = p['xp'] + xp
-                                                        with open('./resources/battle/log.json', 'w') as f:
-                                                            json.dump(contents, f, indent=4)
-                                                        await message.channel.send(
-                                                            "{} received *{}* XP".format(message.author.mention, xp))
-                                                        await asyncio.sleep(wait_time)
+                                                        if not p['lvl'] >= max_player_level:
+                                                            xp = random.randrange(r_monster[0].min_xp, r_monster[0].max_xp)
+                                                            p['xp'] = p['xp'] + xp
+                                                            with open('./resources/battle/log.json', 'w') as f:
+                                                                json.dump(contents, f, indent=4)
+                                                            await message.channel.send(
+                                                                "{} received *{}* XP".format(message.author.mention, xp))
+                                                            await asyncio.sleep(wait_time)
 
                                                         # Level up check
                                                         if p['lvl'] < max_player_level:
@@ -318,12 +319,12 @@ async def run(client, message):
                                                                                            .format(
                                                                     message.author.mention, reward, level_bonus_hp))
                                                                 await asyncio.sleep(wait_time)
-                                                        elif int(p['lvl']) == int(max_player_level):
+                                                        elif int(p['lvl']) >= int(max_player_level):
                                                             await message.channel.send(
                                                                 ":dart: *{} has reached* **max level {}**! :dart:"
                                                                     .format(message.author.mention, max_player_level))
                                                             await asyncio.sleep(wait_time)
-                                                            p['lvl'] = max_player_level + 1
+                                                            p['lvl'] = max_player_level
 
                                                         # Gems
                                                         award = random.randrange(r_monster[0].min_reward,
@@ -402,8 +403,9 @@ async def run(client, message):
                         for p in contents['players']:
                             if str(message.author.id) == str(p['name']):
                                 if p['lvl'] >= max_player_level:
-                                    await message.channel.send("{}\n```cs\nLEVEL {}```"
-                                                               .format(message.author.mention, max_player_level))
+                                    await message.channel.send(
+                                        ":dart: *{} has reached* **max level**! :dart:\n```cs\nLEVEL {}```"
+                                            .format(message.author.mention, max_player_level))
                                 else:
                                     await message.channel.send("{}\n```cs\nLEVEL {}```"
                                                                .format(message.author.mention, p['lvl']))
@@ -823,6 +825,24 @@ async def run(client, message):
                                     elif str(player_receiver) not in str(contents['players']):
                                         await message.channel.send("{}, {} has no save file yet!".format(message.author.mention, player_receiver))
 
+                    # Leaderboard
+                    elif 'leaderboard' in '{}'.format(message.content.lower()):
+                        for p in contents['players']:
+                            await message.channel.send('Work in progress.')
+                            '''if p['lvl']:
+                                leader_name = []
+                                leader_lvl = []
+                                leader_gem = []
+                                leader_name.append(p['name'])
+                                leader_lvl.append(p['lvl'])
+                                leader_gem.append(p['gem'])
+                                leader_msg = []
+                                leader_msg.append(leader_name)
+                                leader_msg.append(leader_lvl)
+                                leader_msg.append(leader_gem)
+                                leader_msg_final = "\n".join(map(str, leader_msg))
+                                await message.channel.send("{}".format(leader_msg_final))'''
+
                     # todo Trade swords
                     elif 'trade' in '{}'.format(message.content.lower()):
                         print('')
@@ -841,7 +861,9 @@ async def run(client, message):
                     else:
                         await message.channel.send(help_msg())
 
-
+# todo if lvl > 10 r_monster is r_monster 2
+# todo gem and level leaderboard!
+# todo gem limit & purse for more gems
 # todo fishing
 # todo battle cries op basis van je message
 # todo speedfight > wait_time is 0
