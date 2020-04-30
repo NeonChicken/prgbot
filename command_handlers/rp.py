@@ -12,8 +12,10 @@ max_player_level = 20  # must be at least 10
 crafting_cost = 20  # cost of crafting a new sword
 max_items = 5  # maximum amount of items in player inventory
 max_shop_items = 10  # maximum amount of items in shop inventory
+max_gems = 500  # maximum amount of gems a player can hold
 level_bonus_hp = 1  # adds this number to max_hp on level up
 level_bonus_gem_multiplier = 4  # multiplies this number to current level to calculate gem reward
+leaderboard_display = 3  # amount of players shown in leaderboard
 
 
 def generate_insult():
@@ -189,7 +191,8 @@ async def run(client, message):
                      "\n**shop** - shows items in shop" \
                      "\n**shop** (**buy**/**sell**) (*item name*) - buy or sell items" \
                      "\n**consume** (*item name*) - consume an item" \
-                     "\n**craft** - craft a sword for **{}** :gem:".format(crafting_cost)
+                     "\n**leaderboard** - shows the top {} highest level players" \
+                     "\n**craft** - craft a sword for **{}** :gem:".format(leaderboard_display, crafting_cost)
         return response
 
     # loading save files
@@ -311,7 +314,14 @@ async def run(client, message):
                                                             if p['xp'] >= (50 * p['lvl'] * (1 + p['lvl'])):
                                                                 p['lvl'] = p['lvl'] + 1
                                                                 reward = p['lvl'] * level_bonus_gem_multiplier
-                                                                p['gem'] = p['gem'] + reward
+                                                                if p['gem'] >= max_gems:
+                                                                    p['gem'] = max_gems
+                                                                    await message.channel.send(
+                                                                        "*{} can't hold any more :gem:!*".format(
+                                                                            message.author.mention))
+                                                                    reward = 0
+                                                                else:
+                                                                    p['gem'] = p['gem'] + reward
                                                                 p['max_hp'] = p['max_hp'] + level_bonus_hp
                                                                 with open('./resources/battle/log.json', 'w') as f:
                                                                     json.dump(contents, f, indent=4)
@@ -319,22 +329,27 @@ async def run(client, message):
                                                                                            .format(
                                                                     message.author.mention, reward, level_bonus_hp))
                                                                 await asyncio.sleep(wait_time)
-                                                        elif int(p['lvl']) >= int(max_player_level):
+                                                        elif int(p['lvl']) == int(max_player_level):
                                                             await message.channel.send(
                                                                 ":dart: *{} has reached* **max level {}**! :dart:"
                                                                     .format(message.author.mention, max_player_level))
                                                             await asyncio.sleep(wait_time)
-                                                            p['lvl'] = max_player_level
+                                                            p['lvl'] = max_player_level + 1
 
                                                         # Gems
                                                         award = random.randrange(r_monster[0].min_reward,
                                                                                  r_monster[0].max_reward)
-                                                        p['gem'] = p['gem'] + award
+                                                        if p['gem'] >= max_gems:
+                                                            p['gem'] = max_gems
+                                                            await message.channel.send(
+                                                                "*{} can't hold any more :gem:!*".format(message.author.mention))
+                                                        else:
+                                                            p['gem'] = p['gem'] + award
+                                                            await message.channel.send(
+                                                                "{} found **{}** :gem:".format(message.author.mention,
+                                                                                               award))
                                                         with open('./resources/battle/log.json', 'w') as f:
                                                             json.dump(contents, f, indent=4)
-                                                        await message.channel.send(
-                                                            "{} found **{}** :gem:".format(message.author.mention,
-                                                                                           award))
                                                         someone_died = 1
                                                         return
                                                     await asyncio.sleep(wait_time)
@@ -496,7 +511,13 @@ async def run(client, message):
                                                                                 old_modifier, old_sword, sell_value,
                                                                                 l['modifier'],
                                                                                 l['sword']))
-                                                                p['gem'] = p['gem'] + sell_value
+                                                                if p['gem'] >= max_gems:
+                                                                    p['gem'] = max_gems
+                                                                    await message.channel.send(
+                                                                        "*But {} can't hold any more :gem:!*".format(
+                                                                            message.author.mention))
+                                                                else:
+                                                                    p['gem'] = p['gem'] + sell_value
                                                                 with open('./resources/battle/log.json', 'w') as f:
                                                                     json.dump(contents, f, indent=4)
 
@@ -694,7 +715,13 @@ async def run(client, message):
                                                                                 number = p['items'].index(t)
                                                                                 del (p['items'][number])
                                                                                 break
-                                                                        p['gem'] = p['gem'] + i.sell_price
+                                                                        if p['gem'] >= max_gems:
+                                                                            p['gem'] = max_gems
+                                                                            await message.channel.send(
+                                                                                "*But {} can't hold any more :gem:!*".format(
+                                                                                    message.author.mention))
+                                                                        else:
+                                                                            p['gem'] = p['gem'] + i.sell_price
                                                                         with open('./resources/battle/log.json',
                                                                                   'w') as f:
                                                                             json.dump(contents, f, indent=4)
@@ -828,32 +855,59 @@ async def run(client, message):
                     # Leaderboard
                     elif 'leaderboard' in '{}'.format(message.content.lower()):
                         for p in contents['players']:
-                            await message.channel.send('Work in progress.')
-                            '''if p['lvl']:
-                                leader_name = []
-                                leader_lvl = []
-                                leader_gem = []
-                                leader_name.append(p['name'])
-                                leader_lvl.append(p['lvl'])
-                                leader_gem.append(p['gem'])
-                                leader_msg = []
-                                leader_msg.append(leader_name)
-                                leader_msg.append(leader_lvl)
-                                leader_msg.append(leader_gem)
-                                leader_msg_final = "\n".join(map(str, leader_msg))
-                                await message.channel.send("{}".format(leader_msg_final))'''
+                            if str(p['name']) == str("null"):
+                                pass
+                            else:
+                                for i in range(leaderboard_display):
+                                    # - 1 because of the first null object in the json
+                                    if i < (len(contents['players']) - 1):
+                                        leader_name = []
+                                        leader_gem = []
+                                        leader_lvl = []
+                                        leader_modifier = []
+                                        leader_sword = []
+                                        for p in contents['players']:
+                                            if str(p['name']) == str("null"):
+                                                pass
+                                            else:
+                                                leader_name.append(p['name'])
+                                                leader_gem.append(p['gem'])
+                                                if p['lvl'] > max_player_level:
+                                                    leader_lvl.append(max_player_level)
+                                                else:
+                                                    leader_lvl.append(p['lvl'])
+                                                leader_modifier.append(p['inv'][0]['modifier'])
+                                                leader_sword.append(p['inv'][0]['sword'])
+                                leader_lvl_sorted = [x for _, x in sorted(zip(leader_lvl, leader_lvl), reverse=True)]
+                                leader_name_sorted = [x for _,x in sorted(zip(leader_lvl, leader_name), reverse=True)]
+                                leader_gem_sorted = [x for _, x in sorted(zip(leader_lvl, leader_gem), reverse=True)]
+                                leader_mod_sorted = [x for _, x in sorted(zip(leader_lvl, leader_modifier), reverse=True)]
+                                leader_swo_sorted = [x for _, x in sorted(zip(leader_lvl, leader_sword), reverse=True)]
+                                leader_msg_final = []
+                                leader_count = len(leader_lvl)
+                                for l in range(leader_count):
+                                    if l < leaderboard_display:
+                                        leader_msg_final.append("**{}.** ".format(l + 1))
+                                        leader_msg_final.append("<@{}> ".format(leader_name_sorted[l]))
+                                        leader_msg_final.append(" [**{}** :gem:]".format(leader_gem_sorted[l]))
+                                        leader_msg_final.append("\n```cs\nLEVEL {}```".format(leader_lvl_sorted[l]))
+                                        leader_msg_final.append("*Current sword:*{}{}\n".format(leader_mod_sorted[l], leader_swo_sorted[l]))
+                                leader_msg = "".join(map(str, leader_msg_final))
+                                await message.channel.send("{}".format(leader_msg))
+                                return
+
 
                     # todo Trade swords
                     elif 'trade' in '{}'.format(message.content.lower()):
-                        print('')
+                        pass
 
                     # todo Battle other players found in save
                     elif 'battle' in '{}'.format(message.content.lower()):
-                        print('')
+                        pass
 
                     # Test
                     elif 'test' in '{}'.format(message.content.lower()):
-                        print('')
+                        pass
 
                     elif 'help' in '{}'.format(message.content.lower()):
                         await message.channel.send(help_msg())
@@ -861,18 +915,16 @@ async def run(client, message):
                     else:
                         await message.channel.send(help_msg())
 
-# todo if lvl > 10 r_monster is r_monster 2
-# todo gem and level leaderboard!
-# todo gem limit & purse for more gems
-# todo fishing
-# todo battle cries op basis van je message
-# todo speedfight > wait_time is 0
-# todo bulk crafting
-# todo delete save file with confirmation
-# todo info per class. Monster info, sword info, modifier info etc.
-# Shop: buy <-> sell
+
+
+# if lvl > 10 r_monster is r_monster 2
+# gem limit & purse for more gems
+# fishing
+# battle cries op basis van je message
+# bulk crafting
+# delete save file with confirmation
+# info per class. Monster info, sword info, modifier info etc.
 # Armor items with received_damage modifier
 # Special Items that give extra max_hp: heart=item("HP Pizza", 100, 10, 15, 0, 0.5)
 # Fun items
-# Shop or trade system to sell-buy items and swords
 # Blackjack
