@@ -258,6 +258,7 @@ async def run(client, message):
                                 except asyncio.TimeoutError:
                                     await message.channel.send(
                                         "{} didn't respond in time!:zzz:".format(message.author.mention))
+                                    return
                                 else:
                                     if msg.content.lower() == 'fight' or msg.content.lower() == prefix + 'fight':
                                         max_hp = p['max_hp']
@@ -456,6 +457,7 @@ async def run(client, message):
                                         await message.channel.send(
                                             "{} didn't respond in time, you didn't craft anything:zzz:"
                                                 .format(message.author.mention))
+                                        return
                                     else:
                                         if msg.content.lower() == 'yes':
                                             p['gem'] = p['gem'] - crafting_cost
@@ -486,6 +488,7 @@ async def run(client, message):
                                                 await message.channel.send(
                                                     "{} didn't respond in time, you lost the sword!:zzz:"
                                                         .format(message.author.mention))
+                                                return
                                             else:
                                                 for p in contents['players']:
                                                     if str(message.author.id) == str(p['name']):
@@ -864,12 +867,14 @@ async def run(client, message):
                                         leader_name = []
                                         leader_gem = []
                                         leader_lvl = []
+                                        leader_xp = []
                                         leader_modifier = []
                                         leader_sword = []
                                         for p in contents['players']:
                                             if str(p['name']) == str("null"):
                                                 pass
                                             else:
+                                                leader_xp.append(p['xp'])
                                                 leader_name.append(p['name'])
                                                 leader_gem.append(p['gem'])
                                                 if p['lvl'] > max_player_level:
@@ -878,11 +883,11 @@ async def run(client, message):
                                                     leader_lvl.append(p['lvl'])
                                                 leader_modifier.append(p['inv'][0]['modifier'])
                                                 leader_sword.append(p['inv'][0]['sword'])
-                                leader_lvl_sorted = [x for _, x in sorted(zip(leader_lvl, leader_lvl), reverse=True)]
-                                leader_name_sorted = [x for _,x in sorted(zip(leader_lvl, leader_name), reverse=True)]
-                                leader_gem_sorted = [x for _, x in sorted(zip(leader_lvl, leader_gem), reverse=True)]
-                                leader_mod_sorted = [x for _, x in sorted(zip(leader_lvl, leader_modifier), reverse=True)]
-                                leader_swo_sorted = [x for _, x in sorted(zip(leader_lvl, leader_sword), reverse=True)]
+                                leader_lvl_sorted = [x for _, x in sorted(zip(leader_xp, leader_lvl), reverse=True)]
+                                leader_name_sorted = [x for _,x in sorted(zip(leader_xp, leader_name), reverse=True)]
+                                leader_gem_sorted = [x for _, x in sorted(zip(leader_xp, leader_gem), reverse=True)]
+                                leader_mod_sorted = [x for _, x in sorted(zip(leader_xp, leader_modifier), reverse=True)]
+                                leader_swo_sorted = [x for _, x in sorted(zip(leader_xp, leader_sword), reverse=True)]
                                 leader_msg_final = []
                                 leader_count = len(leader_lvl)
                                 for l in range(leader_count):
