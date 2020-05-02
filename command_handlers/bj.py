@@ -10,6 +10,7 @@ timeout_time = 30.0  # message.author response time in seconds
 wait_time = 0  # time in between bot messages TO DO --> change to 3 or 2, used for testing
 leaderboard_display = 3  # amount of players shown in leaderboard
 start_credits = 100  # amount of credits players start with
+blackjack_multiplier = 4  # multiplies bet amount on blackjack
 
 suit = ["Hearts:hearts:", "Clubs:clubs:", "Spades:spades:", "Diamonds:diamonds:"]
 
@@ -87,7 +88,7 @@ async def run(client, message):
                             })
                             with open('./resources/battle/casino.json', 'w') as f:
                                 json.dump(casino_file, f, indent=4)
-                            await message.channel.send('*Created a casino save for {}.*'.format(message.author))
+                            await message.channel.send('*Created a casino save file for {}.*'.format(message.author))
                     count = count + 1
 
     # game logic
@@ -178,8 +179,8 @@ async def run(client, message):
                                                 if total_value == 21:
                                                     await message.channel.send(
                                                         ":dart:{} has blackjack!:dart:\nEarned **{}** :dollar:".format(
-                                                            message.author.mention, (bet * 4)))
-                                                    p['credit'] = p['credit'] + (bet * 4)
+                                                            message.author.mention, (bet * blackjack_multiplier)))
+                                                    p['credit'] = p['credit'] + (bet * blackjack_multiplier)
                                                     with open('./resources/battle/casino.json', 'w') as f:
                                                         json.dump(casino_file, f, indent=4)
                                                     return
@@ -211,8 +212,8 @@ async def run(client, message):
                                                     if total_value == 21:
                                                         await message.channel.send(
                                                             ":dart:{} has blackjack!:dart:\nEarned **{}** :dollar:".format(
-                                                                message.author.mention, (bet * 4)))
-                                                        p['credit'] = p['credit'] + (bet * 4)
+                                                                message.author.mention, (bet * blackjack_multiplier)))
+                                                        p['credit'] = p['credit'] + (bet * blackjack_multiplier)
                                                         with open('./resources/battle/casino.json', 'w') as f:
                                                             json.dump(casino_file, f, indent=4)
                                                         return
