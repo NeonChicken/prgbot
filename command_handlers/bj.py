@@ -175,13 +175,22 @@ async def run(client, message):
                                         await asyncio.sleep(wait_time)
                                         while total_value_D:
                                             if total_value_D > 21:
-                                                await message.channel.send(
-                                                    "*Dealer* busted!\n:trophy:{} won!:trophy:\nEarned **{}** :dollar:".format(
-                                                        message.author.mention, (bet * 2)))
-                                                p['credit'] = p['credit'] + (bet * 2)
-                                                with open('./resources/battle/casino.json', 'w') as f:
-                                                    json.dump(casino_file, f, indent=4)
-                                                return
+                                                if total_value == 21:
+                                                    await message.channel.send(
+                                                        ":dart:{} has blackjack!:dart:\nEarned **{}** :dollar:".format(
+                                                            message.author.mention, (bet * 4)))
+                                                    p['credit'] = p['credit'] + (bet * 4)
+                                                    with open('./resources/battle/casino.json', 'w') as f:
+                                                        json.dump(casino_file, f, indent=4)
+                                                    return
+                                                else:
+                                                    await message.channel.send(
+                                                        "*Dealer* busted!\n:trophy:{} won!:trophy:\nEarned **{}** :dollar:".format(
+                                                            message.author.mention, (bet * 2)))
+                                                    p['credit'] = p['credit'] + (bet * 2)
+                                                    with open('./resources/battle/casino.json', 'w') as f:
+                                                        json.dump(casino_file, f, indent=4)
+                                                    return
                                             elif total_value_D < 17:
                                                 extra_card_D = gen_card()
                                                 total_value_D = total_value_D + int(extra_card_D[2])
