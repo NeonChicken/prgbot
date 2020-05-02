@@ -162,10 +162,8 @@ async def run(client, message):
                                                                                          total_value))
                                         await asyncio.sleep(wait_time)
                                     elif msg.content.lower() == 'stand' or msg.content.lower() == prefix + 'stand':
-                                        await message.channel.send("{} decides to stand".format(message.author.mention))
-                                        await asyncio.sleep(wait_time)
                                         await message.channel.send(
-                                            "\n\n{} \n*Dealer* has:\n{}\n{}\nTotal: **{}**".format(
+                                            "{} decides to stand\n*Dealer* has:\n{}\n{}\nTotal: **{}**".format(
                                                 message.author.mention,
                                                 '**{}** of ***{}***'.format(
                                                     first_card_D[0],
@@ -201,13 +199,22 @@ async def run(client, message):
                                                                                            total_value_D))
                                                 await asyncio.sleep(wait_time)
                                                 if total_value_D < total_value:
-                                                    await message.channel.send(
-                                                        ":trophy:{} won!:trophy:\nEarned **{}** :dollar:".format(
-                                                            message.author.mention, (bet * 2)))
-                                                    p['credit'] = p['credit'] + (bet * 2)
-                                                    with open('./resources/battle/casino.json', 'w') as f:
-                                                        json.dump(casino_file, f, indent=4)
-                                                    return
+                                                    if total_value == 21:
+                                                        await message.channel.send(
+                                                            ":dart:{} has blackjack!:dart:\nEarned **{}** :dollar:".format(
+                                                                message.author.mention, (bet * 4)))
+                                                        p['credit'] = p['credit'] + (bet * 4)
+                                                        with open('./resources/battle/casino.json', 'w') as f:
+                                                            json.dump(casino_file, f, indent=4)
+                                                        return
+                                                    else:
+                                                        await message.channel.send(
+                                                            ":trophy:{} won!:trophy:\nEarned **{}** :dollar:".format(
+                                                                message.author.mention, (bet * 2)))
+                                                        p['credit'] = p['credit'] + (bet * 2)
+                                                        with open('./resources/battle/casino.json', 'w') as f:
+                                                            json.dump(casino_file, f, indent=4)
+                                                        return
                                                 elif total_value_D == total_value:
                                                     await message.channel.send(
                                                         "{}\nIt's a draw!:balloon:\nReclaimed **{}** :dollar:".format(
@@ -221,10 +228,7 @@ async def run(client, message):
                                                         ":skull:{} lost!:skull:\nLost **{}** :dollar:".format(
                                                             message.author.mention, bet))
                                                     return
-                                    else:
-                                        await message.channel.send(
-                                            "{} did not hit, stand or split!".format(message.author.mention))
-                                        return
+
                                     '''elif msg.content.lower() == 'split' or msg.content.lower() == prefix + 'split':
                                         if int(first_card[2]) == int(second_card[2]):
                                             await message.channel.send(
@@ -261,7 +265,7 @@ async def run(client, message):
                         with open('./resources/battle/casino.json', 'w') as f:
                             json.dump(casino_file, f, indent=4)
                         await message.channel.send(
-                            "{} has bummed **{}** :dollar:\nYou're at {} bums!".format(message.author.mention,
+                            "{} has bummed **{}** :dollar:\nYou're at **{}** bums!".format(message.author.mention,
                                                                                        start_credits, p['bum']))
                     else:
                         await message.channel.send("{}, you still have credits!".format(message.author.mention))
