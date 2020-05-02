@@ -66,7 +66,7 @@ async def run(client, message):
     else:
         with open('./resources/battle/casino.json') as file:
             casino_file = json.load(file)
-            if str(casino_file) == '' or str(casino_file) == '[]':
+            if str(casino_file) == '' or str(casino_file) == '[]' or str(casino_file) == '{}':
                 create_json_gambler()
                 await message.channel.send('*casino.json was empty. Please try again.*')
                 return
@@ -263,6 +263,19 @@ async def run(client, message):
                 if str(message.author.id) == str(p['name']):
                     await message.channel.send(
                         '{} has **{}** :dollar:'.format(message.author.mention, p['credit']))
+
+        elif 'reset' in '{}'.format(message.content.lower()):
+            if 'Administrator' in str(message.author.roles):
+                for p in casino_file['gamblers']:
+                    del(casino_file['gamblers'])
+                    with open('./resources/battle/casino.json', 'w') as f:
+                        json.dump(casino_file, f, indent=4)
+
+                    await message.channel.send("Save file has been reset!")
+                    return
+            else:
+                await message.channel.send("{} is not an admin!".format(message.author.mention))
+                return
 
         # Bum credits if you're out
         elif 'bum' in '{}'.format(message.content.lower()):
