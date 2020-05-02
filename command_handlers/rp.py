@@ -200,12 +200,14 @@ async def run(client, message):
         # if file not found, make log.json with create_json_player function
         create_json_player()
         await message.channel.send('Log.json has been created. Please try again.')
+        return
     else:
         with open('./resources/battle/log.json') as log:
             contents = json.load(log)
             if str(contents) == '' or str(contents) == '[]':
                 create_json_player()
                 await message.channel.send('Log.json was empty. Please try again.')
+                return
             else:
                 count = 1
                 do_not_create_save = 0
@@ -239,6 +241,7 @@ async def run(client, message):
                 # game logic
                 if len(message.content.split()) < 2:
                     await message.channel.send(help_msg())
+                    return
 
                 if len(message.content.split()) >= 2:
                     if 'fight' in '{}'.format(message.content.lower()):
@@ -905,20 +908,25 @@ async def run(client, message):
                     # todo Trade swords
                     elif 'trade' in '{}'.format(message.content.lower()):
                         pass
+                        return
 
                     # todo Battle other players found in save
                     elif 'battle' in '{}'.format(message.content.lower()):
                         pass
+                        return
 
                     # Test
                     elif 'test' in '{}'.format(message.content.lower()):
                         pass
+                        return
 
                     elif 'help' in '{}'.format(message.content.lower()):
                         await message.channel.send(help_msg())
+                        return
 
                     else:
                         await message.channel.send(help_msg())
+                        return
 
 
 
