@@ -1,5 +1,4 @@
 import random
-from .insultme import generate_insult
 
 # Flip a coin and send the result.
 async def run(client, message):
