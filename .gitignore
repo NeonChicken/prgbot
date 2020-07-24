@@ -8,3 +8,4 @@ run.sh
 update.sh
 resources/battle/casino.json
 resources/battle/fish.json
+resources/battle/uno.json
