@@ -39,9 +39,11 @@ async def run(client, message):
             commandname) + "database!" \
                            "\n\nAfter **" + prefix + "{}** ".format(commandname) \
                    + "you can use: " \
+                     "\n**lb** - check out the leaderboard" \
+                     "\n\n*(Admin only):*" \
                      "\n**add** - add a game" \
-                     "\n**dl** - request & download json data" \
-                     "\n**lb** - check out the leaderboard"
+                     "\n**dl** - request & download .json data" \
+                     "\n**delete** - delete data"
 
         return response
 
@@ -171,7 +173,6 @@ async def run(client, message):
                                             "20 79 79 82 % Name 0 0 7 15 % Name 15 25 72 103".format(
                                                 live_count))
 
-
                                         def check(msg):
                                             return msg.author == message.author
 
@@ -195,10 +196,15 @@ async def run(client, message):
 
                                                 for every in test_str:
                                                     # Split[0] is the first word (name)
-                                                    msg_string_player = every.lower().replace("-", "").replace(":", "").replace(".", "").split()[0]
+                                                    msg_string_player = \
+                                                        every.lower().replace("-", "").replace(",", "").replace(":", "").replace(".",
+                                                                                                                "").split()[
+                                                            0]
                                                     # Split[1:len] is everything that comes after the first word & (remove dashes: -)
-                                                    msg_string_score = every.lower().replace("-", "").replace(":", "").replace(".", "").split()[
-                                                                   1:len(msg.content.lower().split())]
+                                                    msg_string_score = every.lower().replace("-", "").replace(",", "").replace(":",
+                                                                                                              "").replace(
+                                                        ".", "").split()[
+                                                                       1:len(msg.content.lower().split())]
 
                                                     # Checking if there's only digits in the score
                                                     for ints in msg_string_score:
@@ -206,7 +212,8 @@ async def run(client, message):
                                                             await message.channel.send(
                                                                 "You've entered a wrong character! "
                                                                 "Please try again.\n"
-                                                                "The character: **{}** should be a digit, it's present in **{}** their score".format(ints, msg_string_player.capitalize()))
+                                                                "The character: **{}** should be a digit, it's present in **{}** their score".format(
+                                                                    ints, msg_string_player.capitalize()))
                                                             return
                                                     # Checking if entered score equals the amount of rounds
                                                     if len(msg_string_score) is not msg_round_count:
@@ -224,7 +231,6 @@ async def run(client, message):
                                                     })
 
                                                 # todo add notions after score in brackets (detect brackets as string)
-
 
                                             total_games_in_file = 0
                                             # Just getting the loop, no need to store anything. For = none
@@ -273,7 +279,7 @@ async def run(client, message):
                                             else:
                                                 if 'yes' in msg.content.lower() or 'ye' in msg.content.lower() or 'y' in msg.content.lower():
                                                     uno_file['games'].append({
-                                                        'game_id': '{}'.format(total_games_in_file),
+                                                        'game_id': '{}'.format(int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1),  # grab last known id and add one
                                                         'submitted_by': '{}'.format(message.author.id),
                                                         'submission_date_UTC': '{}'.format(message.created_at),
                                                         'player_total': '{}'.format(msg_player_count),
@@ -287,7 +293,7 @@ async def run(client, message):
                                                     await message.channel.send('Game has been submitted!')
                                                     return
                                                 elif 'no' in msg.content.lower() or 'n' in msg.content.lower():
-                                                    await message.channel.send('Sorry to hear that!')
+                                                    await message.channel.send('Alrighty then!')
                                                     return
                                                 else:
                                                     await message.channel.send(
@@ -395,29 +401,103 @@ async def run(client, message):
                 response = "Only Admins and Mods are able to use this command!"
                 await message.channel.send(response)
 
-        elif 'edit' in '{}'.format(message.content.lower()):
-            if ('Administrator' in str(message.author.roles)) or ('Moderator' in str(message.author.roles)):
-                temp = 'ja'
-                # Which game do you want to edit? // Give ID
-            else:
-                response = "Only Admins and Mods are able to use this command!"
-                await message.channel.send(response)
-
         elif 'delete' in '{}'.format(message.content.lower()):
             if ('Administrator' in str(message.author.roles)) or ('Moderator' in str(message.author.roles)):
-                temp = 'ja'
-                # Which game do you want to delete? // Give ID
+                await message.channel.send("Which game do you want do delete? Give me the ID digits.")
+
+                def check(msg):
+                    return msg.author == message.author
+
+                try:
+                    msg = await client.wait_for('message', check=check, timeout=timeout_time)
+                except asyncio.TimeoutError:
+                    await message.channel.send(
+                        "{} didn't respond in time! The game hasn't been added:zzz:".format(
+                            message.author.mention))
+                    return
+                else:
+                    if msg.content.isdigit():
+                        for g in uno_file['games']:
+                            # Don't count the first value because it's null
+                            if g is not uno_file['games'][0]:
+                                if int(msg.content) > len(uno_file['games']):
+                                    await message.channel.send("Couldn't find that ID!")
+                                    return
+                                elif g['game_id'] == msg.content:
+                                    # Making player_array look neat in a string
+                                    player_array_msg = g['players']
+                                    final_msg = ''
+                                    for pl in player_array_msg:
+                                        str_scores = str(pl['score'])
+                                        str_scores = str_scores.replace("'", "")
+                                        str_scores = str_scores.replace("[", "")
+                                        str_scores = str_scores.replace("]", "")
+                                        final_msg = final_msg + '**{}**: *{}*\n'.format(
+                                            pl['player'].capitalize(),
+                                            str_scores)
+                                    await message.channel.send(
+                                        "*Game ID* : **{}**\n"
+                                        "*Submitted By* : {}\n"
+                                        "*Submission Date* : {}\n"
+                                        "*Total Players* : **{}**\n"
+                                        "*Total Rounds* : **{}**\n"
+                                        "*Game Date* : {}\n\n"
+                                        "*Players* : \n{}"
+                                        "\n\n**Are you sure you want to delete this game?** ***Y/N***".format(g['game_id'],
+                                                                                                g['submitted_by'],
+                                                                                                g['submission_date_UTC'],
+                                                                                                g['player_total'],
+                                                                                                g['rounds'],
+                                                                                                g['date'],
+                                                                                                final_msg))
+
+                                    def check(msg):
+                                        return msg.author == message.author
+
+                                    try:
+                                        msg = await client.wait_for('message', check=check, timeout=timeout_time)
+                                    except asyncio.TimeoutError:
+                                        await message.channel.send(
+                                            "{} didn't respond in time! The game hasn't been added:zzz:".format(
+                                                message.author.mention))
+                                        return
+                                    else:
+                                        if 'yes' in msg.content.lower() or 'ye' in msg.content.lower() or 'y' in msg.content.lower():
+                                            for d in uno_file['games']:
+                                                # Don't count the first value because it's null
+                                                if d is not uno_file['games'][0]:
+                                                    if g['game_id'] in d['game_id']:
+                                                        await message.channel.send(
+                                                            'Game has been deleted!\n\n{}'.format(d))
+                                                        uno_file['games'].remove(d)
+
+                                            with open('./resources/battle/uno.json', 'w') as f:
+                                                json.dump(uno_file, f, indent=4)
+
+                                            return
+                                        elif 'no' in msg.content.lower() or 'n' in msg.content.lower():
+                                            await message.channel.send('Alrighty then!')
+                                            return
+                                        else:
+                                            await message.channel.send(
+                                                "I can only understand **yes**, **ye**, **y**, **n** and **no**")
+                                            return
+
+                    else:
+                        await message.channel.send("That ID doesn't exist!")
+                        return
+
             else:
                 response = "Only Admins and Mods are able to use this command!"
                 await message.channel.send(response)
 
         elif 'test' in '{}'.format(message.content.lower()):
+            print(int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1)
             pass
 
         else:
             await message.channel.send(help_msg())
             return
-
 
 # Add a restart, stop, quit command in a while loop for access at any time.
 # Notions in players[player]
