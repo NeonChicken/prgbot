@@ -4,6 +4,7 @@ import json
 import os
 import io
 import re
+import discord
 
 prefix = '!'
 
@@ -39,7 +40,9 @@ async def run(client, message):
                            "\n\nAfter **" + prefix + "{}** ".format(commandname) \
                    + "you can use: " \
                      "\n**add** - add a game" \
+                     "\n**dl** - request & download json data" \
                      "\n**lb** - check out the leaderboard"
+
         return response
 
     # loading save files
@@ -65,8 +68,7 @@ async def run(client, message):
 
     if len(message.content.split()) >= 2:
         if 'add' in '{}'.format(message.content.lower()):
-            if ('Administrator' in str(message.author.roles)) or ('Moderator' in str(message.author.roles)) or (
-                    'PRG' in str(message.author.roles)) or ('Wine Expert' in str(message.author.roles)):
+            if 'UNO-Datist' in str(message.author.roles):
 
                 # Make array empty every time when adding a game (as some sort of global variable)
                 player_array = []
@@ -165,44 +167,54 @@ async def run(client, message):
 
                                         live_count = msg_player_count
                                         await message.channel.send(
-                                            "I need {} more player(s)\nExample: Name 0 10 25 25 68 102".format(
+                                            "Insert data for {} players, use **%** as a separator\nExample: Name "
+                                            "20 79 79 82 % Name 0 0 7 15 % Name 15 25 72 103".format(
                                                 live_count))
 
-                                        while live_count is not 0:
-                                            def check(msg):
-                                                return msg.author == message.author
 
-                                            try:
-                                                msg = await client.wait_for('message', check=check,
-                                                                            timeout=timeout_time)
-                                            except asyncio.TimeoutError:
-                                                await message.channel.send(
-                                                    "{} didn't respond in time! The game hasn't been added:zzz:".format(
-                                                        message.author.mention))
-                                                return
-                                            else:
-                                                if msg.content:
-                                                    # todo add notions after score in brackets (detect brackets as string)
+                                        def check(msg):
+                                            return msg.author == message.author
 
+                                        try:
+                                            msg = await client.wait_for('message', check=check,
+                                                                        timeout=timeout_time)
+                                        except asyncio.TimeoutError:
+                                            await message.channel.send(
+                                                "{} didn't respond in time! The game hasn't been added:zzz:".format(
+                                                    message.author.mention))
+                                            return
+                                        else:
+                                            if msg.content:
+                                                test_str = msg.content.split("%")
+                                                if len(test_str) is not int(msg_player_count):
+                                                    await message.channel.send(
+                                                        "Not the right amount of players! There should be **{}** players, but you entered data for **{}** players!\n\n*(Perhaps a seperator* ***%*** *is present where it shouldn't)*".format(
+                                                            int(msg_player_count),
+                                                            len(test_str)))
+                                                    return
+
+                                                for every in test_str:
                                                     # Split[0] is the first word (name)
-                                                    msg_string_player = msg.content.lower().split()[0]
+                                                    msg_string_player = every.lower().replace("-", "").replace(":", "").replace(".", "").split()[0]
                                                     # Split[1:len] is everything that comes after the first word & (remove dashes: -)
-                                                    msg_string_score = msg.content.lower().replace("-", "").replace(":", "").replace(".", "").split()[
-                                                                       1:len(msg.content.lower().split())]
+                                                    msg_string_score = every.lower().replace("-", "").replace(":", "").replace(".", "").split()[
+                                                                   1:len(msg.content.lower().split())]
+
                                                     # Checking if there's only digits in the score
                                                     for ints in msg_string_score:
                                                         if not ints.isdigit():
                                                             await message.channel.send(
                                                                 "You've entered a wrong character! "
                                                                 "Please try again.\n"
-                                                                "This character should be a digit: **{}**".format(ints))
+                                                                "The character: **{}** should be a digit, it's present in **{}** their score".format(ints, msg_string_player.capitalize()))
                                                             return
                                                     # Checking if entered score equals the amount of rounds
                                                     if len(msg_string_score) is not msg_round_count:
                                                         await message.channel.send(
-                                                            "You've entered the wrong amount of rounds for this player!"
+                                                            "You've entered the wrong amount of rounds for player *{}*!"
                                                             "\nThere should be: **{}** rounds.. "
                                                             "{} couldn't have played **{}** rounds!".format(
+                                                                msg_string_player,
                                                                 msg_round_count, msg_string_player.capitalize(),
                                                                 len(msg_string_score)))
                                                         return
@@ -210,11 +222,10 @@ async def run(client, message):
                                                         'player': '{}'.format(msg_string_player),
                                                         "score": msg_string_score
                                                     })
-                                                    live_count = live_count - 1
-                                                    if live_count > 0:
-                                                        await message.channel.send(
-                                                            "I need {} more player(s)".format(live_count))
-                                        else:
+
+                                                # todo add notions after score in brackets (detect brackets as string)
+
+
                                             total_games_in_file = 0
                                             # Just getting the loop, no need to store anything. For = none
                                             for none in uno_file['games']:
@@ -298,9 +309,8 @@ async def run(client, message):
                             return
 
             else:
-                response = "Only Admins, Mods, PRG and Wine Experts are able to submit Uno games!"
+                response = "Only users with the **UNO-Datist** role can add data!!"
                 await message.channel.send(response)
-
 
         elif 'lb' in '{}'.format(message.content.lower()):
             try:
@@ -377,6 +387,13 @@ async def run(client, message):
             temp = 'ja'
             # Input all player names with a space > Start an Uno game with 4 players?
             # Do you have the score for the first round yet? No > I'll wait here (60 min)
+
+        elif 'dl' in '{}'.format(message.content.lower()):
+            if ('Administrator' in str(message.author.roles)) or ('Moderator' in str(message.author.roles)):
+                await message.channel.send(file=discord.File('resources/battle/uno.json'))
+            else:
+                response = "Only Admins and Mods are able to use this command!"
+                await message.channel.send(response)
 
         elif 'edit' in '{}'.format(message.content.lower()):
             if ('Administrator' in str(message.author.roles)) or ('Moderator' in str(message.author.roles)):
