@@ -12,7 +12,7 @@ timeout_time = 600.0  # message.author response time in seconds
 player_limit = 20  # the player limit of uno participation
 
 # TODO THESE ARE DUPLICATED IN LEADERBORD CODE! IF YOU CHANGE THESE VALUES YOU SHOULD CHANGE THEM THERE TOO!
-leaderboard_limit = 3  # the amount of players displayed on the leaderboard
+leaderboard_limit = 5  # the amount of players displayed on the leaderboard
 leaderboard_entrypoint = 10  # the amount of UNO games you must have played before you can show up on the leaderboard
 
 data = {}
@@ -230,7 +230,7 @@ async def run(client, message):
                                                         "score": msg_string_score
                                                     })
 
-                                                # todo add notions after score in brackets (detect brackets as string)
+                                                # todo add notions [after score in brackets (detect brackets as string)]
 
                                             total_games_in_file = 0
                                             # Just getting the loop, no need to store anything. For = none
@@ -325,7 +325,7 @@ async def run(client, message):
                 if message.content.split()[3].isdigit():
                     leaderboard_entrypoint = int(message.content.split()[3])
             except IndexError:
-                leaderboard_limit = 3  # the amount of players displayed on the leaderboard
+                leaderboard_limit = 5  # the amount of players displayed on the leaderboard
                 leaderboard_entrypoint = 10  # the amount of UNO games you must have played before you can show up on the leaderboard
 
             total_player_list = []
@@ -371,7 +371,7 @@ async def run(client, message):
                                     if len(players[p['player']]) >= leaderboard_entrypoint:
                                         leader_names.append(p['player'].capitalize())
                                         leader_games.append(len(players[p['player']]))
-                                        leader_average.append(round(total_score / len(players[p['player']])))
+                                        leader_average.append(round(total_score / len(players[p['player']]), 2))
                             except KeyError:
                                 continue
 
@@ -379,7 +379,7 @@ async def run(client, message):
             leader_games_sorted = [x for _, x in sorted(zip(leader_average, leader_games))]
             leader_average_sorted = [x for _, x in sorted(zip(leader_average, leader_average))]
             leader_msg_final = []
-            leader_count = len(leader_average)
+            leader_count = len(leader_average_sorted)
             for l in range(leader_count):
                 if l < leaderboard_limit:
                     leader_msg_final.append("**{}.** ***{}*** has played ".format(l + 1, leader_names_sorted[l]))
@@ -390,7 +390,7 @@ async def run(client, message):
             return
 
         elif 'new' in '{}'.format(message.content.lower()):
-            temp = 'ja'
+            pass
             # Input all player names with a space > Start an Uno game with 4 players?
             # Do you have the score for the first round yet? No > I'll wait here (60 min)
 
@@ -494,6 +494,43 @@ async def run(client, message):
         elif 'test' in '{}'.format(message.content.lower()):
             print(int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1)
             pass
+
+        elif 'year' in '{}'.format(message.content.lower()):
+            await message.channel.send("Which year? **2019** | **2020** | **N/A***")
+
+            def check(msg):
+                return msg.author == message.author
+
+            try:
+                msg = await client.wait_for('message', check=check, timeout=timeout_time)
+            except asyncio.TimeoutError:
+                await message.channel.send(
+                    "{} didn't respond in time! The game hasn't been added:zzz:".format(
+                        message.author.mention))
+                return
+            else:
+                # todo add YEAR RANKINGS UNO TOP 2019, TOP N/A etc.
+                if msg.content == "2019":
+                    print("2019")
+                elif msg.content == "2020":
+                    print("2020")
+                elif msg.content.lower() == "n/a" or msg.content.lower() == "na":
+                    print("NA")
+                else:
+                    await message.channel.send("You can only enter the following: | **2019** | **2020** | **N/A**")
+                    return
+
+        # todo amount of registered games
+        # todo biggest hit leaderboard. Look at score value difference!!
+        # todo most games played in month
+
+        # todo most GAMES WON!! finished with the lowest last score compared to other players
+        # todo then take the average of amount of games played and amount of games won. THAT'S THE LB percentage
+        # 1. Luuk has won 10 out of 69 games. Their win ratio is 10/69
+
+        # todo clean sweep victories, final score = 0
+        # todo games won at 69,
+        # todo replace name with other string
 
         else:
             await message.channel.send(help_msg())
