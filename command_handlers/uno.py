@@ -257,7 +257,7 @@ async def run(client, message):
                                                                        "*Total Players* : **{}**\n"
                                                                        "*Total Rounds* : **{}**\n"
                                                                        "*Game Date* : {}\n\n"
-                                                                       "*Players* : \n{}".format(total_games_in_file,
+                                                                       "*Players* : \n{}".format(int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1,
                                                                                                  message.author.mention,
                                                                                                  message.created_at,
                                                                                                  msg_player_count,
