@@ -39,8 +39,8 @@ async def run(client, message):
             commandname) + "database!" \
                            "\n\nAfter **" + prefix + "{}** ".format(commandname) \
                    + "you can use: " \
-                     "\n**leaderboard** *{player amount}* *{minimum games}*- check out the leaderboard" \
-                     "\n**loserboard** *{player amount}* *{minimum games}*- check out the loserboard" \
+                     "\n**leaderboard** *{players}* *{games}* - check out the leaderboard" \
+                     "\n**loserboard** *{players}* *{games}* - check out the loserboard" \
                      "\n\n*(Admin only):*" \
                      "\n**add** - add a game" \
                      "\n**dl** - request & download .json data" \
