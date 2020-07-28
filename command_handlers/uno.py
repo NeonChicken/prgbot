@@ -657,7 +657,7 @@ async def run(client, message):
                                                 if d is not uno_file['games'][0]:
                                                     if g['game_id'] == d['game_id']:
                                                         await message.channel.send(
-                                                            'Game has been edited!\n\n{}'.format(d))
+                                                            'Game has been edited!')
                                                         g['date'] = msg.content.lower()
 
                                             with open('./resources/battle/uno.json', 'w') as f:
@@ -837,12 +837,12 @@ async def run(client, message):
 
             year = ''
             try:
-                if message.content.split()[3].lower() == 'na' or message.content.split()[2].lower() == 'n/a':
+                if message.content.split()[3].lower() == 'na' or message.content.split()[3].lower() == 'n/a':
                     year = 'n/a'
                 elif message.content.split()[3].lower() == 'all':
                     year = 'all'
                 elif message.content.split()[3].isdigit():
-                    if message.content.split()[3] == '2018' or message.content.split()[2] == '2019' or \
+                    if message.content.split()[3] == '2018' or message.content.split()[3] == '2019' or \
                             message.content.split()[3] == '2020':
                         year = int(message.content.split()[3])
                     else:
