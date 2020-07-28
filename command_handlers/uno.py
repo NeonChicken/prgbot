@@ -588,92 +588,92 @@ async def run(client, message):
                 await message.channel.send(response)
 
         elif 'edit' in '{}'.format(message.content.lower()):
-            await message.channel.send("Which game do you want to edit? Give me the ID digits.")
+            if ('Administrator' in str(message.author.roles)):
+                await message.channel.send("Which game do you want to edit? Give me the ID digits.")
 
-            def check(msg):
-                return msg.author == message.author
+                def check(msg):
+                    return msg.author == message.author
 
-            try:
-                msg = await client.wait_for('message', check=check, timeout=timeout_time)
-            except asyncio.TimeoutError:
-                await message.channel.send(
-                    "{} didn't respond in time! The game hasn't been shown:zzz:".format(
-                        message.author.mention))
-                return
-            else:
-                if msg.content.isdigit():
-                    game_count = 0
-                    for g in uno_file['games']:
-                        # Don't count the first value because it's null
-                        if g is not uno_file['games'][0]:
-                            game_count = game_count + 1
-                            if int(msg.content) > len(uno_file['games']):
-                                await message.channel.send("Couldn't find that ID!")
-                                return
-                            elif g['game_id'] == msg.content:
-                                # Making player_array look neat in a string
-                                player_array_msg = g['players']
-                                final_msg = ''
-                                for pl in player_array_msg:
-                                    str_scores = str(pl['score'])
-                                    str_scores = str_scores.replace("'", "")
-                                    str_scores = str_scores.replace("[", "")
-                                    str_scores = str_scores.replace("]", "")
-                                    final_msg = final_msg + '**{}**: *{}*\n'.format(
-                                        pl['player'].capitalize(),
-                                        str_scores)
-                                await message.channel.send(
-                                    "*Game ID* : **{}**\n"
-                                    "*Submitted By* : {}\n"
-                                    "*Submission Date* : {}\n"
-                                    "*Total Players* : **{}**\n"
-                                    "*Total Rounds* : **{}**\n"
-                                    "*Game Date* : {}\n\n"
-                                    "*Players* : \n{}"
-                                    "\n\n**What date?**".format(
-                                        g['game_id'],
-                                        g['submitted_by'],
-                                        g['submission_date_UTC'],
-                                        g['player_total'],
-                                        g['rounds'],
-                                        g['date'],
-                                        final_msg))
-
-                                def check(msg):
-                                    return msg.author == message.author
-
-                                try:
-                                    msg = await client.wait_for('message', check=check, timeout=timeout_time)
-                                except asyncio.TimeoutError:
-                                    await message.channel.send(
-                                        "{} didn't respond in time! The game hasn't been edited:zzz:".format(
-                                            message.author.mention))
+                try:
+                    msg = await client.wait_for('message', check=check, timeout=timeout_time)
+                except asyncio.TimeoutError:
+                    await message.channel.send(
+                        "{} didn't respond in time! The game hasn't been shown:zzz:".format(
+                            message.author.mention))
+                    return
+                else:
+                    if msg.content.isdigit():
+                        game_count = 0
+                        for g in uno_file['games']:
+                            # Don't count the first value because it's null
+                            if g is not uno_file['games'][0]:
+                                game_count = game_count + 1
+                                if int(msg.content) > len(uno_file['games']):
+                                    await message.channel.send("Couldn't find that ID!")
                                     return
-                                else:
-                                    if msg.content.lower():
-                                        for d in uno_file['games']:
-                                            # Don't count the first value because it's null
-                                            if d is not uno_file['games'][0]:
-                                                if g['game_id'] == d['game_id']:
-                                                    await message.channel.send(
-                                                        'Game has been edited!\n\n{}'.format(d))
-                                                    g['date'] = msg.content.lower()
+                                elif g['game_id'] == msg.content:
+                                    # Making player_array look neat in a string
+                                    player_array_msg = g['players']
+                                    final_msg = ''
+                                    for pl in player_array_msg:
+                                        str_scores = str(pl['score'])
+                                        str_scores = str_scores.replace("'", "")
+                                        str_scores = str_scores.replace("[", "")
+                                        str_scores = str_scores.replace("]", "")
+                                        final_msg = final_msg + '**{}**: *{}*\n'.format(
+                                            pl['player'].capitalize(),
+                                            str_scores)
+                                    await message.channel.send(
+                                        "*Game ID* : **{}**\n"
+                                        "*Submitted By* : {}\n"
+                                        "*Submission Date* : {}\n"
+                                        "*Total Players* : **{}**\n"
+                                        "*Total Rounds* : **{}**\n"
+                                        "*Game Date* : {}\n\n"
+                                        "*Players* : \n{}"
+                                        "\n\n**What date? Ex: 2020-6-12**".format(
+                                            g['game_id'],
+                                            g['submitted_by'],
+                                            g['submission_date_UTC'],
+                                            g['player_total'],
+                                            g['rounds'],
+                                            g['date'],
+                                            final_msg))
 
-                                        with open('./resources/battle/uno.json', 'w') as f:
-                                            json.dump(uno_file, f, indent=4)
+                                    def check(msg):
+                                        return msg.author == message.author
 
-                                        return
-                                    elif 'no' in msg.content.lower() or 'n' in msg.content.lower():
-                                        await message.channel.send('Alrighty then!')
+                                    try:
+                                        msg = await client.wait_for('message', check=check, timeout=timeout_time)
+                                    except asyncio.TimeoutError:
+                                        await message.channel.send(
+                                            "{} didn't respond in time! The game hasn't been edited:zzz:".format(
+                                                message.author.mention))
                                         return
                                     else:
-                                        await message.channel.send(
-                                            "Enter the correct date")
-                                        return
-                else:
-                    await message.channel.send("That ID doesn't exist!")
-                    return
+                                        if msg.content.lower():
+                                            for d in uno_file['games']:
+                                                # Don't count the first value because it's null
+                                                if d is not uno_file['games'][0]:
+                                                    if g['game_id'] == d['game_id']:
+                                                        await message.channel.send(
+                                                            'Game has been edited!\n\n{}'.format(d))
+                                                        g['date'] = msg.content.lower()
 
+                                            with open('./resources/battle/uno.json', 'w') as f:
+                                                json.dump(uno_file, f, indent=4)
+
+                                            return
+                                        else:
+                                            await message.channel.send(
+                                                "Enter the correct date")
+                                            return
+                    else:
+                        await message.channel.send("That ID doesn't exist!")
+                        return
+            else:
+                await message.channel.send("You're not an Admin!")
+                return
 
         elif 'show' in '{}'.format(message.content.lower()):
             await message.channel.send("Which game do you want to see? Give me the ID digits.")
