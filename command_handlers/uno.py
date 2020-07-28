@@ -39,12 +39,19 @@ async def run(client, message):
             commandname) + "database!" \
                            "\n\nAfter **" + prefix + "{}** ".format(commandname) \
                    + "you can use: " \
-                     "\n**leaderboard** *{players}* *{games}* - check out the leaderboard" \
-                     "\n**loserboard** *{players}* *{games}* - check out the loserboard" \
-                     "\n\n*(Admin only):*" \
-                     "\n**add** - add a game" \
-                     "\n**dl** - request & download .json data" \
-                     "\n**delete** - delete data"
+                     "\n**leaderboard** *{players}* *{games}* - The leaderboard" \
+                     "\n**loserboard** *{players}* *{games}* - The loserboard" \
+                     "\n**year** *{year}* *{players}* *{games}* - Ranking by year" \
+                     "\n**name** *{name}* *{year}* *{games}* - Ranking by name" \
+                     "\n**show** - Show a game by ID" \
+                     "\n\n*{name}* = name of a player" \
+                     "\n*{year}* = *2018* | *2019* | *2020* | *N/A* | *ALL*" \
+                     "\n*{players}* = amount of players to show *(in digits)*"\
+                     "\n*{games}* = minimum amount of games needed on record *(in digits)*"\
+                     "\n\n\n*(Admin only):*" \
+                     "\n**add** - Add a game" \
+                     "\n**dl** - Request & download .json data" \
+                     "\n**delete** - Delete data"
 
         return response
 
@@ -198,12 +205,16 @@ async def run(client, message):
                                                 for every in test_str:
                                                     # Split[0] is the first word (name)
                                                     msg_string_player = \
-                                                        every.lower().replace("-", "").replace(",", "").replace(":", "").replace(".",
-                                                                                                                "").split()[
+                                                        every.lower().replace("-", "").replace(",", "").replace(":",
+                                                                                                                "").replace(
+                                                            ".",
+                                                            "").split()[
                                                             0]
                                                     # Split[1:len] is everything that comes after the first word & (remove dashes: -)
-                                                    msg_string_score = every.lower().replace("-", "").replace(",", "").replace(":",
+                                                    msg_string_score = every.lower().replace("-", "").replace(",",
                                                                                                               "").replace(
+                                                        ":",
+                                                        "").replace(
                                                         ".", "").split()[
                                                                        1:len(msg.content.lower().split())]
 
@@ -258,13 +269,14 @@ async def run(client, message):
                                                                        "*Total Players* : **{}**\n"
                                                                        "*Total Rounds* : **{}**\n"
                                                                        "*Game Date* : {}\n\n"
-                                                                       "*Players* : \n{}".format(int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1,
-                                                                                                 message.author.mention,
-                                                                                                 message.created_at,
-                                                                                                 msg_player_count,
-                                                                                                 msg_round_count,
-                                                                                                 msg_date,
-                                                                                                 final_msg))
+                                                                       "*Players* : \n{}".format(
+                                                int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1,
+                                                message.author.mention,
+                                                message.created_at,
+                                                msg_player_count,
+                                                msg_round_count,
+                                                msg_date,
+                                                final_msg))
 
                                             def check(msg):
                                                 return msg.author == message.author
@@ -280,7 +292,9 @@ async def run(client, message):
                                             else:
                                                 if 'yes' in msg.content.lower() or 'ye' in msg.content.lower() or 'y' in msg.content.lower():
                                                     uno_file['games'].append({
-                                                        'game_id': '{}'.format(int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1),  # grab last known id and add one
+                                                        'game_id': '{}'.format(int(
+                                                            uno_file['games'][len(uno_file['games']) - 1][
+                                                                'game_id']) + 1),  # grab last known id and add one
                                                         'submitted_by': '{}'.format(message.author.id),
                                                         'submission_date_UTC': '{}'.format(message.created_at),
                                                         'player_total': '{}'.format(msg_player_count),
@@ -372,20 +386,20 @@ async def run(client, message):
                                     if len(players[p['player']]) >= leaderboard_entrypoint:
                                         leader_names.append(p['player'].capitalize())
                                         leader_games.append(len(players[p['player']]))
-                                        leader_average.append(round(total_score / len(players[p['player']]), 2))
+                                        leader_average.append(total_score / len(players[p['player']]))
                             except KeyError:
                                 continue
 
             leader_names_sorted = [x for _, x in sorted(zip(leader_average, leader_names))]
             leader_games_sorted = [x for _, x in sorted(zip(leader_average, leader_games))]
             leader_average_sorted = [x for _, x in sorted(zip(leader_average, leader_average))]
-            leader_msg_final = [":white_check_mark: ***WINNERS*** :white_check_mark:\n"]
+            leader_msg_final = ["***WINNERS:***\n"]
             leader_count = len(leader_average_sorted)
             for l in range(leader_count):
                 if l < leaderboard_limit:
                     leader_msg_final.append("**{}.** ***{}*** has played ".format(l + 1, leader_names_sorted[l]))
                     leader_msg_final.append("**{}** games with an average of: ".format(leader_games_sorted[l]))
-                    leader_msg_final.append("**{}** points!\n".format(leader_average_sorted[l]))
+                    leader_msg_final.append("**{}** points!\n".format(round(leader_average_sorted[l], 2)))
             if len(str(leader_msg_final)) >= 2000:
                 await message.channel.send("There's more than 2000 characters in my message, I suggest a max. of **20**"
                                            " players:\n!uno lb **20** *{minimum games}*")
@@ -447,7 +461,7 @@ async def run(client, message):
                                     if len(players[p['player']]) >= leaderboard_entrypoint:
                                         leader_names.append(p['player'].capitalize())
                                         leader_games.append(len(players[p['player']]))
-                                        leader_average.append(round(total_score / len(players[p['player']]), 2))
+                                        leader_average.append(total_score / len(players[p['player']]))
                             except KeyError:
                                 continue
 
@@ -460,9 +474,10 @@ async def run(client, message):
                 if l < leaderboard_limit:
                     leader_msg_final.append("**{}.** ***{}*** has played ".format(l + 1, leader_names_sorted[l]))
                     leader_msg_final.append("**{}** games with an average of: ".format(leader_games_sorted[l]))
-                    leader_msg_final.append("**{}** points!\n".format(leader_average_sorted[l]))
+                    leader_msg_final.append("**{}** points!\n".format(round(leader_average_sorted[l], 2)))
             if len(str(leader_msg_final)) >= 2000:
-                await message.channel.send("There's more than 2000 characters, I suggest a max. of 20 players.\n*Example:* !uno lb **20** ")
+                await message.channel.send(
+                    "There's more than 2000 characters, I suggest a max. of 20 players.\n*Example:* !uno lb **20** ")
 
             # I suggest 20 players
             leader_msg = "".join(map(str, leader_msg_final))
@@ -523,13 +538,14 @@ async def run(client, message):
                                         "*Total Rounds* : **{}**\n"
                                         "*Game Date* : {}\n\n"
                                         "*Players* : \n{}"
-                                        "\n\n**Are you sure you want to delete this game?** ***Y/N***".format(g['game_id'],
-                                                                                                g['submitted_by'],
-                                                                                                g['submission_date_UTC'],
-                                                                                                g['player_total'],
-                                                                                                g['rounds'],
-                                                                                                g['date'],
-                                                                                                final_msg))
+                                        "\n\n**Are you sure you want to delete this game?** ***Y/N***".format(
+                                            g['game_id'],
+                                            g['submitted_by'],
+                                            g['submission_date_UTC'],
+                                            g['player_total'],
+                                            g['rounds'],
+                                            g['date'],
+                                            final_msg))
 
                                     def check(msg):
                                         return msg.author == message.author
@@ -571,37 +587,259 @@ async def run(client, message):
                 response = "Only Admins and Mods are able to use this command!"
                 await message.channel.send(response)
 
-        elif 'test' in '{}'.format(message.content.lower()):
-            print(int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1)
-            pass
+        elif 'show' in '{}'.format(message.content.lower()):
+            await message.channel.send("Which game do you want to see? Give me the ID digits.")
+
+            def check(msg):
+                return msg.author == message.author
+
+            try:
+                msg = await client.wait_for('message', check=check, timeout=timeout_time)
+            except asyncio.TimeoutError:
+                await message.channel.send(
+                    "{} didn't respond in time! The game hasn't been shown:zzz:".format(
+                        message.author.mention))
+                return
+            else:
+                if msg.content.isdigit():
+                    game_count = 0
+                    for g in uno_file['games']:
+                        # Don't count the first value because it's null
+                        if g is not uno_file['games'][0]:
+                            game_count = game_count + 1
+                            if int(msg.content) > len(uno_file['games']):
+                                await message.channel.send("Couldn't find that ID!")
+                                return
+                            elif g['game_id'] == msg.content:
+                                # Making player_array look neat in a string
+                                player_array_msg = g['players']
+                                final_msg = ''
+                                for pl in player_array_msg:
+                                    str_scores = str(pl['score'])
+                                    str_scores = str_scores.replace("'", "")
+                                    str_scores = str_scores.replace("[", "")
+                                    str_scores = str_scores.replace("]", "")
+                                    final_msg = final_msg + '**{}**: *{}*\n'.format(
+                                        pl['player'].capitalize(),
+                                        str_scores)
+                                await message.channel.send(
+                                    "*Game ID* : **{}**\n"
+                                    "*Submitted By* : {}\n"
+                                    "*Submission Date* : {}\n"
+                                    "*Total Players* : **{}**\n"
+                                    "*Total Rounds* : **{}**\n"
+                                    "*Game Date* : {}\n\n"
+                                    "*Players* : \n{}".format(g['game_id'],
+                                                              g['submitted_by'],
+                                                              g['submission_date_UTC'],
+                                                              g['player_total'],
+                                                              g['rounds'],
+                                                              g['date'],
+                                                              final_msg))
+                                return
+                            elif game_count >= len(uno_file['games']) - 1:
+                                await message.channel.send("That ID doesn't exist!")
+                                return
+                else:
+                    await message.channel.send("That ID doesn't exist!")
+                    return
 
         elif 'year' in '{}'.format(message.content.lower()):
+            try:
+                if message.content.split()[3].isdigit():
+                    leaderboard_limit = int(message.content.split()[3])
+                if message.content.split()[4].isdigit():
+                    leaderboard_entrypoint = int(message.content.split()[4])
+            except IndexError:
+                leaderboard_limit = 5  # the amount of players displayed on the leaderboard
+                leaderboard_entrypoint = 10  # the amount of UNO games you must have played before you can show up on the leaderboard
+
             year = ''
             try:
                 if message.content.split()[2].lower() == 'na' or message.content.split()[2].lower() == 'n/a':
-                    year = 'na'
+                    year = 'n/a'
                 elif message.content.split()[2].lower() == 'all':
                     year = 'all'
                 elif message.content.split()[2].isdigit():
-                    if message.content.split()[2] == '2018' or message.content.split()[2] == '2019' or message.content.split()[2] == '2020':
+                    if message.content.split()[2] == '2018' or message.content.split()[2] == '2019' or \
+                            message.content.split()[2] == '2020':
                         year = int(message.content.split()[2])
                     else:
                         response = "I can only accept **2018** | **2019** | **2020** | **N/A** | **ALL**"
                         await message.channel.send(response)
+                        return
             except IndexError:
                 year = 'all'
 
-            print('year')
             year_player_list = []
             for i in uno_file['games']:
                 # Don't count the first value because it's null
                 if i is not uno_file['games'][0]:
                     # Create empty list > used for storing player names from uno.json
-                    for p in i['players']:
-                        if p['player'] not in str(year_player_list):
-                            pass
+                    if str(year) in i['date'].lower():
+                        year_player_list.append(i)
+                    elif str(year) == 'all':
+                        year_player_list.append(i)
 
-        # todo uno show ID > shows a certain game
+            total_player_list = []
+            for y in year_player_list:
+                for p in y['players']:
+                    if p['player'] not in str(total_player_list):
+                        # Append unknown players into list
+                        total_player_list.append({
+                            '{}'.format(p['player']): [],
+                        })
+
+                    for idx, s in enumerate(p['score']):
+                        if idx == len(p['score']) - 1:
+                            for pkey in total_player_list:
+                                if p['player'] in pkey:
+                                    # If name is found in array of players, append their last round score > (s)
+                                    total_player_list[total_player_list.index(pkey)][p['player']].append(s)
+                                    # total_player_list PRINTS:
+                                    # [{'karst': ['18', '101']}, {'vincent': ['40']},
+                                    # {'toon': ['104', '67']}, {'luuk': ['8', '17']}]
+
+            # Getting all player names again
+            known_players = []
+            leader_names = []
+            leader_games = []
+            leader_average = []
+            for y in year_player_list:
+                for p in y['players']:
+                    for players in total_player_list:
+                        try:
+                            if players[p['player']] and p['player'] not in known_players:
+                                # Put player in a list so we can check if we already iterated over this player.
+                                known_players.append(p['player'])
+                                total_score = 0
+                                for single_score in players[p['player']]:
+                                    total_score = total_score + int(single_score)
+                                if len(players[p['player']]) >= leaderboard_entrypoint:
+                                    leader_names.append(p['player'].capitalize())
+                                    leader_games.append(len(players[p['player']]))
+                                    leader_average.append(total_score / len(players[p['player']]))
+                        except KeyError:
+                            continue
+
+            leader_names_sorted = [x for _, x in sorted(zip(leader_average, leader_names))]
+            leader_games_sorted = [x for _, x in sorted(zip(leader_average, leader_games))]
+            leader_average_sorted = [x for _, x in sorted(zip(leader_average, leader_average))]
+            leader_msg_final = ["***WINNERS:***\n"]
+            leader_count = len(leader_average_sorted)
+            for l in range(leader_count):
+                if l < leaderboard_limit:
+                    leader_msg_final.append("**{}.** ***{}*** has played ".format(l + 1, leader_names_sorted[l]))
+                    leader_msg_final.append("**{}** games with an average of: ".format(leader_games_sorted[l]))
+                    leader_msg_final.append("**{}** points!\n".format(round(leader_average_sorted[l], 2)))
+            if len(str(leader_msg_final)) >= 2000:
+                await message.channel.send("There's more than 2000 characters in my message, I suggest a max. of **20**"
+                                           " players:\n!uno lb **20** *{minimum games}*")
+                return
+            leader_msg = "".join(map(str, leader_msg_final))
+            await message.channel.send("{}".format(leader_msg))
+            return
+
+        elif 'name' in '{}'.format(message.content.lower()):
+            try:
+                if message.content.split()[4].isdigit():
+                    leaderboard_entrypoint = int(message.content.split()[4])
+            except IndexError:
+                leaderboard_entrypoint = 10  # the amount of UNO games you must have played before you can show up on the leaderboard
+
+            year = ''
+            try:
+                if message.content.split()[3].lower() == 'na' or message.content.split()[2].lower() == 'n/a':
+                    year = 'n/a'
+                elif message.content.split()[3].lower() == 'all':
+                    year = 'all'
+                elif message.content.split()[3].isdigit():
+                    if message.content.split()[3] == '2018' or message.content.split()[2] == '2019' or \
+                            message.content.split()[3] == '2020':
+                        year = int(message.content.split()[3])
+                    else:
+                        response = "I can only accept **2018** | **2019** | **2020** | **N/A** | **ALL**"
+                        await message.channel.send(response)
+                        return
+            except IndexError:
+                year = 'all'
+
+            year_player_list = []
+            for i in uno_file['games']:
+                # Don't count the first value because it's null
+                if i is not uno_file['games'][0]:
+                    # Create empty list > used for storing player names from uno.json
+                    if str(year) in i['date'].lower():
+                        year_player_list.append(i)
+                    elif str(year) == 'all':
+                        year_player_list.append(i)
+
+            total_player_list = []
+            for y in year_player_list:
+                for p in y['players']:
+                    if p['player'] not in str(total_player_list):
+                        # Append unknown players into list
+                        total_player_list.append({
+                            '{}'.format(p['player']): [],
+                        })
+
+                    for idx, s in enumerate(p['score']):
+                        if idx == len(p['score']) - 1:
+                            for pkey in total_player_list:
+                                if p['player'] in pkey:
+                                    # If name is found in array of players, append their last round score > (s)
+                                    total_player_list[total_player_list.index(pkey)][p['player']].append(s)
+                                    # total_player_list PRINTS:
+                                    # [{'karst': ['18', '101']}, {'vincent': ['40']},
+                                    # {'toon': ['104', '67']}, {'luuk': ['8', '17']}]
+
+            if message.content.split()[2] in str(total_player_list):
+                name = message.content.split()[2].lower()
+            else:
+                await message.channel.send("That name does not exist in the list!")
+                return
+
+            # Getting all player names again
+            known_players = []
+            leader_names = []
+            leader_games = []
+            leader_average = []
+            for y in year_player_list:
+                for p in y['players']:
+                    for players in total_player_list:
+                        try:
+                            if players[p['player']] and p['player'] not in known_players:
+                                # Put player in a list so we can check if we already iterated over this player.
+                                known_players.append(p['player'])
+                                total_score = 0
+                                for single_score in players[p['player']]:
+                                    total_score = total_score + int(single_score)
+                                if len(players[p['player']]) >= leaderboard_entrypoint:
+                                    leader_names.append(p['player'].capitalize())
+                                    leader_games.append(len(players[p['player']]))
+                                    leader_average.append(total_score / len(players[p['player']]))
+                        except KeyError:
+                            continue
+
+            leader_names_sorted = [x for _, x in sorted(zip(leader_average, leader_names))]
+            leader_games_sorted = [x for _, x in sorted(zip(leader_average, leader_games))]
+            leader_average_sorted = [x for _, x in sorted(zip(leader_average, leader_average))]
+            leader_msg_final = ["***Your rank:***\n"]
+            leader_count = len(leader_average_sorted)
+            for l in range(leader_count):
+                if name in leader_names_sorted[l].lower():
+                    leader_msg_final.append("**{}.** ***{}*** has played ".format(l + 1, leader_names_sorted[l]))
+                    leader_msg_final.append("**{}** games with an average of: ".format(leader_games_sorted[l]))
+                    leader_msg_final.append("**{}** points!\n".format(round(leader_average_sorted[l], 2)))
+            leader_msg = "".join(map(str, leader_msg_final))
+            await message.channel.send("{}".format(leader_msg))
+            return
+
+        elif 'test' in '{}'.format(message.content.lower()):
+            print(int(uno_file['games'][len(uno_file['games']) - 1]['game_id']) + 1)
+            pass
+
+
         # todo Uno-player role: They can add a game in real-time, adds this game to a queue which has to be confirmed by a uno-datist!
         # todo amount of registered games, leaderboard with who played the most
         # todo biggest hit leaderboard. Look at score value difference!!
