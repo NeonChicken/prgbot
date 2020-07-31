@@ -5,7 +5,7 @@ import os
 import io
 import re
 import discord
-from operator import itemgetter
+import operator
 
 prefix = '!'
 
@@ -603,7 +603,7 @@ async def run(client, message):
                                 '{}'.format(p['player']),
                                 w[p['player']][3],
                             ))
-                sorted_game = sorted(one_game, key=itemgetter(1))
+                sorted_game = sorted(one_game, key=operator.itemgetter(1))
 
 
                 # Making new list to check if player key matches win or lose position.
@@ -645,7 +645,20 @@ async def run(client, message):
                         except KeyError:
                             pass
 
-            leader_names_sorted = sorted(leader_names, key=itemgetter(2), reverse=True)
+            # BORDA
+            #         aantal x 1e plek =    43 x [aantal players per gewonnen gameronde]
+            #         aantal x  2e plek =   32 x [aantal players per 2e plek gameronde - 1]
+            #         aantal x  3e plek =   16 x [aantal players per 3e plek gameronde - 2]
+            #                               ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC.
+            #                               ______________________________________________
+            #                               aantal gespeelde games
+            #                               = gemiddelde lb borda score
+
+            # leader_wins = operator.itemgetter(2)
+            # leader_loss = operator.itemgetter(3)
+            # leader_games = operator.itemgetter(1)
+            # leader_sum = (leader_wins - leader_loss) / leader_games
+            leader_names_sorted = sorted(leader_names, key=operator.itemgetter(2), reverse=True)
             leader_msg_final = ["***UNO WINS***\n*Year: {}*\n\n".format(year)]
             leader_count = len(leader_names_sorted)
             for l in range(leader_count):
