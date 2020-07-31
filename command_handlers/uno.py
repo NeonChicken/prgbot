@@ -5,6 +5,7 @@ import os
 import io
 import re
 import discord
+from operator import itemgetter
 
 prefix = '!'
 
@@ -38,6 +39,7 @@ async def run(client, message):
             commandname) + "database!" \
                            "\n\nAfter **" + prefix + "{}** ".format(commandname) \
                    + "you can use: " \
+                     "\n**wins** *{year}* *{players}* *{games}* - The leaderboard" \
                      "\n**leb** *{year}* *{players}* *{games}* - The leaderboard" \
                      "\n**lob** *{year}* *{players}* *{games}* - The loserboard" \
                      "\n**name** *{name}* *{year}* *{games}* - Ranking by name" \
@@ -413,7 +415,7 @@ async def run(client, message):
             leader_names_sorted = [x for _, x in sorted(zip(leader_average, leader_names))]
             leader_games_sorted = [x for _, x in sorted(zip(leader_average, leader_games))]
             leader_average_sorted = [x for _, x in sorted(zip(leader_average, leader_average))]
-            leader_msg_final = ["***WINNERS:***\n"]
+            leader_msg_final = ["***WINNERS***\n*Year: {}*\n\n".format(year)]
             leader_count = len(leader_average_sorted)
             for l in range(leader_count):
                 if l < leaderboard_limit:
@@ -483,7 +485,6 @@ async def run(client, message):
                                     # total_player_list PRINTS:
                                     # [{'karst': ['18', '101']}, {'vincent': ['40']},
                                     # {'toon': ['104', '67']}, {'luuk': ['8', '17']}]
-
             # Getting all player names again
             known_players = []
             leader_names = []
@@ -509,13 +510,147 @@ async def run(client, message):
             leader_names_sorted = [x for _, x in sorted(zip(leader_average, leader_names), reverse=True)]
             leader_games_sorted = [x for _, x in sorted(zip(leader_average, leader_games), reverse=True)]
             leader_average_sorted = [x for _, x in sorted(zip(leader_average, leader_average), reverse=True)]
-            leader_msg_final = [":x: ***LOSERS:*** :x:\n"]
+            leader_msg_final = [":x: ***LOSERS*** :x:\n*Year: {}*\n\n".format(year)]
             leader_count = len(leader_average_sorted)
             for l in range(leader_count):
                 if l < leaderboard_limit:
                     leader_msg_final.append("**{}.** ***{}*** has played ".format(l + 1, leader_names_sorted[l]))
                     leader_msg_final.append("**{}** games with an average of: ".format(leader_games_sorted[l]))
                     leader_msg_final.append("**{}** points!\n".format(round(leader_average_sorted[l], 2)))
+            if len(str(leader_msg_final)) >= 2000:
+                await message.channel.send("There's more than 2000 characters in my message, I suggest a max. of **20**"
+                                           " players:\n!uno lb **20** *{minimum games}*")
+                return
+            leader_msg = "".join(map(str, leader_msg_final))
+            await message.channel.send("{}".format(leader_msg))
+            return
+
+        elif 'wins' in '{}'.format(message.content.lower()):
+            try:
+                if message.content.split()[3].isdigit():
+                    leaderboard_limit = int(message.content.split()[3])
+                if message.content.split()[4].isdigit():
+                    leaderboard_entrypoint = int(message.content.split()[4])
+            except IndexError:
+                leaderboard_limit = 5  # the amount of players displayed on the leaderboard
+                leaderboard_entrypoint = 10  # the amount of UNO games you must have played before you can show up on the leaderboard
+
+            year = ''
+            try:
+                if message.content.split()[2].lower() == 'na' or message.content.split()[2].lower() == 'n/a':
+                    year = 'n/a'
+                elif message.content.split()[2].lower() == 'all':
+                    year = 'all'
+                elif message.content.split()[2].isdigit():
+                    if message.content.split()[2] == '2018' or message.content.split()[2] == '2019' or \
+                            message.content.split()[2] == '2020':
+                        year = int(message.content.split()[2])
+                    else:
+                        response = "I can only accept **2018** | **2019** | **2020** | **N/A** | **ALL**/*****"
+                        await message.channel.send(response)
+                        return
+            except IndexError:
+                year = 'all'
+
+            year_player_list = []
+            for i in uno_file['games']:
+                # Don't count the first value because it's null
+                if i is not uno_file['games'][0]:
+                    # Create empty list > used for storing player names from uno.json
+                    if str(year) in i['date'].lower():
+                        year_player_list.append(i)
+                    elif str(year) == 'all':
+                        year_player_list.append(i)
+
+            total_player_list = []
+            player_checklist = []
+            for y in year_player_list:
+                win_names = []
+                for p in y['players']:
+                    # If player not found, add to total_player_list for storing game info and checklist for checking
+                    if p['player'] not in player_checklist:
+                        # Append unknown players into list
+                        total_player_list.append({
+                            '{}'.format(p['player']): [],
+                        })
+                        player_checklist.append(p['player'])
+
+                    for idx, s in enumerate(p['score']):
+                        if idx == len(p['score']) - 1:
+                            for pkey in total_player_list:
+                                if p['player'] in pkey:
+                                    # If name is found in array of players, and it's the first game, make first key 1
+                                    if total_player_list[total_player_list.index(pkey)][p['player']] == []:
+                                        # Add to player: games, wins, losses, last score
+                                        total_player_list[total_player_list.index(pkey)][p['player']] = [1, 0, 0, 0]
+
+                                        total_player_list[total_player_list.index(pkey)][p['player']][3] = int(s)
+
+                                    # If first game key exists, add 1 per played game to get total played games
+                                    else:
+                                        total_player_list[total_player_list.index(pkey)][p['player']][0] = \
+                                            total_player_list[total_player_list.index(pkey)][p['player']][0] + 1
+
+                                        total_player_list[total_player_list.index(pkey)][p['player']][3] = int(s)
+                                    win_names.append(total_player_list[total_player_list.index(pkey)])
+
+                # Making new list per game to sort
+                one_game = []
+                for p in y['players']:
+                    for w in win_names:
+                        if p['player'] in w:
+                            one_game.append((
+                                '{}'.format(p['player']),
+                                w[p['player']][3],
+                            ))
+                sorted_game = sorted(one_game, key=itemgetter(1))
+
+
+                # Making new list to check if player key matches win or lose position.
+                for p in y['players']:
+                    # If this player key is in first place
+                    if p['player'] == sorted_game[0][0]:
+                        for pp in total_player_list:
+                            if p['player'] in pp:
+                                # Add 1 won game to player
+                                total_player_list[total_player_list.index(pp)][p['player']][1] = \
+                                    total_player_list[total_player_list.index(pp)][p['player']][1] + 1
+                        # FIRST PLACE
+                    elif p['player'] == sorted_game[len(sorted_game) - 1][0]:
+                        for pp in total_player_list:
+                            if p['player'] in pp:
+                                # Add 1 lost game to player
+                                total_player_list[total_player_list.index(pp)][p['player']][2] = \
+                                    total_player_list[total_player_list.index(pp)][p['player']][2] + 1
+                        # LAST PLACE
+
+            # Getting all player names again
+            known_players = []
+            leader_names = []
+            for y in year_player_list:
+                for p in y['players']:
+                    for players in total_player_list:
+                        try:
+                            if p['player'] not in known_players:
+                                if players[p['player']][0] >= leaderboard_entrypoint:
+                                    # Append name > total > wins > losses
+                                    leader_names.append((
+                                        p['player'].capitalize(),
+                                        players[p['player']][0],
+                                        players[p['player']][1],
+                                        players[p['player']][2]
+                                    ))
+                                # Put player in a list so we can check if we already iterated over this player.
+                                known_players.append(p['player'])
+                        except KeyError:
+                            pass
+
+            leader_names_sorted = sorted(leader_names, key=itemgetter(2), reverse=True)
+            leader_msg_final = ["***UNO WINS***\n*Year: {}*\n\n".format(year)]
+            leader_count = len(leader_names_sorted)
+            for l in range(leader_count):
+                if l < leaderboard_limit:
+                    leader_msg_final.append("**{}.** ***{}*** has won **{}**/**{}** games (lost: *{}*/*{}*)\n".format(l + 1, leader_names_sorted[l][0], leader_names_sorted[l][2], leader_names_sorted[l][1], leader_names_sorted[l][3], leader_names_sorted[l][1]))
             if len(str(leader_msg_final)) >= 2000:
                 await message.channel.send("There's more than 2000 characters in my message, I suggest a max. of **20**"
                                            " players:\n!uno lb **20** *{minimum games}*")
@@ -592,7 +727,7 @@ async def run(client, message):
             try:
                 if message.content.split()[3].lower() == 'na' or message.content.split()[3].lower() == 'n/a':
                     year = 'n/a'
-                elif message.content.split()[3].lower() == 'all':
+                elif message.content.split()[3].lower() == 'all' or message.content.split()[3].lower() == '*':
                     year = 'all'
                 elif message.content.split()[3].isdigit():
                     if message.content.split()[3] == '2018' or message.content.split()[3] == '2019' or \
@@ -672,115 +807,6 @@ async def run(client, message):
                     leader_msg_final.append("**{}.** ***{}*** has played ".format(l + 1, leader_names_sorted[l]))
                     leader_msg_final.append("**{}** games with an average of: ".format(leader_games_sorted[l]))
                     leader_msg_final.append("**{}** points!\n".format(round(leader_average_sorted[l], 2)))
-            leader_msg = "".join(map(str, leader_msg_final))
-            await message.channel.send("{}".format(leader_msg))
-            return
-
-        elif 'wins' in '{}'.format(message.content.lower()):
-            try:
-                if message.content.split()[3].isdigit():
-                    leaderboard_limit = int(message.content.split()[3])
-                if message.content.split()[4].isdigit():
-                    leaderboard_entrypoint = int(message.content.split()[4])
-            except IndexError:
-                leaderboard_limit = 5  # the amount of players displayed on the leaderboard
-                leaderboard_entrypoint = 10  # the amount of UNO games you must have played before you can show up on the leaderboard
-
-            year = ''
-            try:
-                if message.content.split()[2].lower() == 'na' or message.content.split()[2].lower() == 'n/a':
-                    year = 'n/a'
-                elif message.content.split()[2].lower() == 'all':
-                    year = 'all'
-                elif message.content.split()[2].isdigit():
-                    if message.content.split()[2] == '2018' or message.content.split()[2] == '2019' or \
-                            message.content.split()[2] == '2020':
-                        year = int(message.content.split()[2])
-                    else:
-                        response = "I can only accept **2018** | **2019** | **2020** | **N/A** | **ALL**/*****"
-                        await message.channel.send(response)
-                        return
-            except IndexError:
-                year = 'all'
-
-            year_player_list = []
-            for i in uno_file['games']:
-                # Don't count the first value because it's null
-                if i is not uno_file['games'][0]:
-                    # Create empty list > used for storing player names from uno.json
-                    if str(year) in i['date'].lower():
-                        year_player_list.append(i)
-                    elif str(year) == 'all':
-                        year_player_list.append(i)
-
-            total_player_list = []
-            for y in year_player_list:
-                one_game = []
-                for p in y['players']:
-                    if p['player'] not in total_player_list:
-                        # Append unknown players into list
-                        total_player_list.append({
-                            '{}'.format(p['player']): [],
-                        })
-
-
-                    for idx, s in enumerate(p['score']):
-                        if idx == len(p['score']) - 1:
-                            for pkey in total_player_list:
-                                print(pkey)
-                                if p['player'] in pkey:
-                                    # If name is found in array of players, and it's the first game, make first key 1
-                                    if total_player_list[total_player_list.index(pkey)][p['player']] == []:
-                                        total_player_list[total_player_list.index(pkey)][p['player']] = [1, 0]
-                                    # If first game key exists, add 1 per played game to get total played games
-                                    else:
-                                        total_player_list[total_player_list.index(pkey)][p['player']][0] = \
-                                            total_player_list[total_player_list.index(pkey)][p['player']][0] + 1
-
-                                    # total_player_list PRINTS:
-                                    # [{'karst': ['147']}, {'vincent': ['27']},
-                                    # {'toon': ['170']}, {'luuk': ['8', '17']}]
-
-                                    one_game.append(p)
-                print('{}\n'.format(one_game))
-
-
-            # Getting all player names again
-            known_players = []
-            leader_names = []
-            leader_games = []
-            leader_average = []
-            for y in year_player_list:
-                for p in y['players']:
-                    for players in total_player_list:
-                        try:
-                            if players[p['player']] and p['player'] not in known_players:
-                                # Put player in a list so we can check if we already iterated over this player.
-                                known_players.append(p['player'])
-                                total_score = 0
-                                for single_score in players[p['player']]:
-                                    total_score = total_score + int(single_score)
-                                if len(players[p['player']]) >= leaderboard_entrypoint:
-                                    leader_names.append(p['player'].capitalize())
-                                    leader_games.append(len(players[p['player']]))
-                                    leader_average.append(total_score / len(players[p['player']]))
-                        except KeyError:
-                            continue
-
-            leader_names_sorted = [x for _, x in sorted(zip(leader_average, leader_names))]
-            leader_games_sorted = [x for _, x in sorted(zip(leader_average, leader_games))]
-            leader_average_sorted = [x for _, x in sorted(zip(leader_average, leader_average))]
-            leader_msg_final = ["***WINNERS:***\n"]
-            leader_count = len(leader_average_sorted)
-            for l in range(leader_count):
-                if l < leaderboard_limit:
-                    leader_msg_final.append("**{}.** ***{}*** has played ".format(l + 1, leader_names_sorted[l]))
-                    leader_msg_final.append("**{}** games with an average of: ".format(leader_games_sorted[l]))
-                    leader_msg_final.append("**{}** points!\n".format(round(leader_average_sorted[l], 2)))
-            if len(str(leader_msg_final)) >= 2000:
-                await message.channel.send("There's more than 2000 characters in my message, I suggest a max. of **20**"
-                                           " players:\n!uno lb **20** *{minimum games}*")
-                return
             leader_msg = "".join(map(str, leader_msg_final))
             await message.channel.send("{}".format(leader_msg))
             return
