@@ -39,15 +39,16 @@ async def run(client, message):
             commandname) + "database!" \
                            "\n\nAfter **" + prefix + "{}** ".format(commandname) \
                    + "you can use: " \
-                     "\n**wins** *{year}* *{players}* *{games}* - The leaderboard" \
+                     "\n**wins** *{year}* *{players}* *{games}* *{reverse}*- The leaderboard" \
                      "\n**leb** *{year}* *{players}* *{games}* - The leaderboard" \
                      "\n**lob** *{year}* *{players}* *{games}* - The loserboard" \
                      "\n**name** *{name}* *{year}* *{games}* - Ranking by name" \
                      "\n**show** - Show a game by ID" \
                      "\n\n*{name}* = name of a player" \
                      "\n*{year}* = *2018* | *2019* | *2020* | *N/A* | *ALL*" \
-                     "\n*{players}* = amount of players to show *(in digits)*"\
-                     "\n*{games}* = minimum amount of games needed on record *(in digits)*"\
+                     "\n*{players}* = amount of players to show *(in digits)*" \
+                     "\n*{games}* = minimum amount of games needed on record *(in digits)*" \
+                     "\n*{reverse}* = reverse the sorting order *(true/false)*" \
                      "\n\n\n*(Admin only):*" \
                      "\n**add** - Add a game" \
                      "\n**dl** - Request & download .json data" \
@@ -198,7 +199,9 @@ async def run(client, message):
                                                 test_str = msg.content.split("%")
                                                 if len(test_str) is not int(msg_player_count):
                                                     await message.channel.send(
-                                                        "Not the right amount of players! There should be **{}** players, but you entered data for **{}** players!\n\n*(Perhaps a seperator* ***%*** *is present where it shouldn't)*".format(
+                                                        "Not the right amount of players! There should be **{}** players, but you entered data for "
+                                                        "**{}** players!\n\n*(Perhaps a seperator* ***%*** "
+                                                        "*is present where it shouldn't)*".format(
                                                             int(msg_player_count),
                                                             len(test_str)))
                                                     return
@@ -535,6 +538,13 @@ async def run(client, message):
                 leaderboard_limit = 5  # the amount of players displayed on the leaderboard
                 leaderboard_entrypoint = 10  # the amount of UNO games you must have played before you can show up on the leaderboard
 
+            sort_rev = False
+            try:
+                if message.content.split()[5] == 'true':
+                    sort_rev = True
+            except IndexError:
+                sort_rev = False
+
             year = ''
             try:
                 if message.content.split()[2].lower() == 'na' or message.content.split()[2].lower() == 'n/a':
@@ -605,7 +615,6 @@ async def run(client, message):
                             ))
                 sorted_game = sorted(one_game, key=operator.itemgetter(1))
 
-
                 # Making new list to check if player key matches win or lose position.
                 for p in y['players']:
                     # If this player key is in first place
@@ -638,36 +647,42 @@ async def run(client, message):
                                         p['player'].capitalize(),
                                         players[p['player']][0],
                                         players[p['player']][1],
-                                        players[p['player']][2]
+                                        players[p['player']][2],
+                                        round(((players[p['player']][1] - players[p['player']][2]) /
+                                               players[p['player']][0] + 1), 2)
                                     ))
                                 # Put player in a list so we can check if we already iterated over this player.
                                 known_players.append(p['player'])
                         except KeyError:
                             pass
 
-            # BORDA
-            #         aantal x 1e plek =    43 x [aantal players per gewonnen gameronde]
-            #         aantal x  2e plek =   32 x [aantal players per 2e plek gameronde - 1]
-            #         aantal x  3e plek =   16 x [aantal players per 3e plek gameronde - 2]
-            #                               ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC.
-            #                               ______________________________________________
-            #                               aantal gespeelde games
-            #                               = gemiddelde lb borda score
-
-            # leader_wins = operator.itemgetter(2)
-            # leader_loss = operator.itemgetter(3)
-            # leader_games = operator.itemgetter(1)
-            # leader_sum = (leader_wins - leader_loss) / leader_games
-            leader_names_sorted = sorted(leader_names, key=operator.itemgetter(2), reverse=True)
-            leader_msg_final = ["***UNO WINS***\n*Year: {}*\n\n".format(year)]
+            leader_sum = lambda playerw: (playerw[2] - playerw[3]) / playerw[1]
+            if sort_rev == True:
+                leader_names_sorted = sorted(leader_names, key=leader_sum)
+            else:
+                leader_names_sorted = sorted(leader_names, key=leader_sum, reverse=True)
+            leader_msg_final = ["***UNO WINS***\n*Year: {}*\n```css\n".format(year)]
             leader_count = len(leader_names_sorted)
             for l in range(leader_count):
                 if l < leaderboard_limit:
-                    leader_msg_final.append("**{}.** ***{}*** has won **{}**/**{}** games (lost: *{}*/*{}*)\n".format(l + 1, leader_names_sorted[l][0], leader_names_sorted[l][2], leader_names_sorted[l][1], leader_names_sorted[l][3], leader_names_sorted[l][1]))
+                    leader_msg_final.append("{}. #{} has a ratio of [{}]\nWon: {}/{} Lost: {}/{}\n\n".format(l + 1,
+                                                                                                             leader_names_sorted[
+                                                                                                                 l][0],
+                                                                                                             leader_names_sorted[
+                                                                                                                 l][4],
+                                                                                                             leader_names_sorted[
+                                                                                                                 l][2],
+                                                                                                             leader_names_sorted[
+                                                                                                                 l][1],
+                                                                                                             leader_names_sorted[
+                                                                                                                 l][3],
+                                                                                                             leader_names_sorted[
+                                                                                                                 l][1]))
             if len(str(leader_msg_final)) >= 2000:
                 await message.channel.send("There's more than 2000 characters in my message, I suggest a max. of **20**"
                                            " players:\n!uno lb **20** *{minimum games}*")
                 return
+            leader_msg_final.append("\n```")
             leader_msg = "".join(map(str, leader_msg_final))
             await message.channel.send("{}".format(leader_msg))
             return
@@ -928,7 +943,7 @@ async def run(client, message):
                 await message.channel.send(response)
 
         elif 'edit' in '{}'.format(message.content.lower()):
-            if ('Administrator' in str(message.author.roles)):
+            if 'Administrator' in str(message.author.roles):
                 await message.channel.send("Which game do you want to edit? Give me the ID digits.")
 
                 def check(msg):
@@ -1052,7 +1067,6 @@ async def run(client, message):
 
                                         return
 
-
                     else:
                         await message.channel.send("That ID doesn't exist!")
                         return
@@ -1083,3 +1097,12 @@ async def run(client, message):
             return
 
 # Notions in players[player]
+
+# BORDA
+#         aantal x 1e plek =    43 x [aantal players per gewonnen gameronde]
+#         aantal x  2e plek =   32 x [aantal players per 2e plek gameronde - 1]
+#         aantal x  3e plek =   16 x [aantal players per 3e plek gameronde - 2]
+#                               ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC. ETC.
+#                               ______________________________________________
+#                               aantal gespeelde games
+#                               = gemiddelde lb borda score
