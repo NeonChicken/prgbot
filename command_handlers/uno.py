@@ -549,7 +549,7 @@ async def run(client, message):
             try:
                 if message.content.split()[2].lower() == 'na' or message.content.split()[2].lower() == 'n/a':
                     year = 'n/a'
-                elif message.content.split()[2].lower() == 'all':
+                elif message.content.split()[2].lower() == 'all' or message.content.split()[2].lower() == '*':
                     year = 'all'
                 elif message.content.split()[2].isdigit():
                     if message.content.split()[2] == '2018' or message.content.split()[2] == '2019' or \
