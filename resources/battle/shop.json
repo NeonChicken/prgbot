@@ -1,0 +1,38 @@
+{
+    "shop_items": [
+        {
+            "items": [
+                {
+                    "name": "Fish"
+                },
+                {
+                    "name": "Cheese"
+                },
+                {
+                    "name": "Beer"
+                },
+                {
+                    "name": "Cheese"
+                },
+                {
+                    "name": "Stew"
+                },
+                {
+                    "name": "Cheese"
+                },
+                {
+                    "name": "Stew"
+                },
+                {
+                    "name": "Apple"
+                },
+                {
+                    "name": "Beer"
+                },
+                {
+                    "name": "Apple"
+                }
+            ]
+        }
+    ]
+}

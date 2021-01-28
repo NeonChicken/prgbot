@@ -1,0 +1,49 @@
+{
+    "fishers": [
+        {
+            "name": "null"
+        },
+        {
+            "name": "235470435498590208",
+            "name_at_save": "NeonChicken",
+            "collection": [
+                [
+                    "Snapper",
+                    1
+                ],
+                [
+                    "Mullet",
+                    1
+                ],
+                [
+                    "Trout",
+                    1
+                ],
+                [
+                    "Bass",
+                    1
+                ],
+                [
+                    "Sardine",
+                    1
+                ],
+                [
+                    "Tuna",
+                    1
+                ],
+                [
+                    "Salmon",
+                    1
+                ],
+                [
+                    "Catfish",
+                    1
+                ],
+                [
+                    "_Seaman_",
+                    1
+                ]
+            ]
+        }
+    ]
+}

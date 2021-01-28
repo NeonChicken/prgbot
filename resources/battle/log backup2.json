@@ -1,0 +1,27 @@
+{
+    "players": [
+        {
+            "name": "test",
+            "hp": 10,
+            "lvl": 1,
+            "xp": 0,
+            "gem": 0,
+            "inv": []
+        },
+        {
+            "name": "NeonChicken#9779",
+            "name_at_save": "NeonChicken",
+            "hp": 10,
+            "lvl": 1,
+            "xp": 0,
+            "gem": 0,
+            "inv": [
+                {
+                    "modifier": "```\nCommon```",
+                    "sword": "```\nKnife```"
+                }
+            ],
+            "items": []
+        }
+    ]
+}

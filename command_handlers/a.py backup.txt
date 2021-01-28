@@ -1,0 +1,93 @@
+        '''
+        # really unnecessary & unreadable code for 'level to emoji number' converter
+        def emoji_level(input):
+            emojis = dict(
+                zero=[':zero:', 0],
+                one=[':one:', 1],
+                two=[':two:', 2],
+                three=[':three:', 3],
+                four=[':four:', 4],
+                five=[':five:', 5],
+                six=[':six:', 6],
+                seven=[':seven:', 7],
+                eight=[':eight:', 8],
+                nine=[':nine:', 9]
+            )
+            for z in emojis.values():
+                if z[1] == input:
+                    return z[0]
+            if input > 9:
+                # TO DO if player level surpasses 9, based on max_player_lvl, show multiple-digit level emojis 
+                # Example: lvl 10 is :one::zero:, lvl 541 is :five::four::one:
+        '''
+
+
+
+
+import random
+import discord
+import asyncio
+from .insultme import generate_insult
+
+class monster:
+    def __init__(self, name, hp):
+        self.name = name
+        self.hp = hp
+
+#class sword self.damage self.resource
+
+goblin = monster("Goblin", 5)
+orc = monster("Orc", 10)
+demon = monster("Demon", 20)
+monsters = [goblin, orc, demon]
+
+#adventure game
+async def run(client, message):
+
+    # if statement that check whether this commands is already being used, or allow multiple users to use!
+    if len(message.content.split()) < 2:
+        hp = 10
+        r_choice = random.choice(monsters)
+        response = "Your HP is {}! You encountered {} with {} HP. You can either fight or run".format(hp, r_choice.name, r_choice.hp)
+        await message.channel.send(response)
+
+        def check(msg):
+            return msg.author == message.author
+        try:
+            msg = await client.wait_for('message', check=check, timeout=3.0)
+        except asyncio.TimeoutError:
+            await message.channel.send('You did not respond in time!')
+        else:
+            if msg.content == 'fight' or msg.content == '?fight':
+                await message.channel.send('You chose to fight the {}!'.format(r_choice.name))
+                await asyncio.sleep(1)
+                damage = random.randint(1, 4)
+                new_hp = r_choice.hp - damage
+                await message.channel.send('You hit the {} for {} HP, it now has {} HP'.format(r_choice.name, damage, new_hp))
+                await asyncio.sleep(1)
+                await message.channel.send('What do you do now? Fight or run?')
+
+                def check(msg):
+                    return msg.author == message.author
+                try:
+                    newmsg = await client.wait_for('message', check=check, timeout=3.0)
+                except asyncio.TimeoutError:
+                    await message.channel.send('You did not respond in time!')
+                else:
+                    await message.channel.send('You did it!')
+            elif msg.content == 'run' or msg.content == '?run':
+                escape = [
+                    'You got away!',
+                    'You ran away!',
+                    'You barely escaped!',
+                    'You ran like a {}!'.format(generate_insult())
+                ]
+                response = random.choice(escape)
+                await message.channel.send(response)
+            else:
+                await message.channel.send('You did not chose fight or run!')
+
+
+    if len(message.content.split()) >= 2:
+        response = "Please don't put anything after the command"
+        await message.channel.send(response)

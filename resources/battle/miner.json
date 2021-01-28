@@ -27,44 +27,12 @@
                     "resources/items/miner/dirt.png"
                 ],
                 [
+                    1,
+                    "compressed dirt",
+                    "Tightly packed dirt",
                     0,
-                    "dirt",
-                    "It's dirty.",
-                    2,
-                    7,
-                    "resources/items/miner/dirt.png"
-                ],
-                [
                     0,
-                    "dirt",
-                    "It's dirty.",
-                    2,
-                    7,
-                    "resources/items/miner/dirt.png"
-                ],
-                [
-                    0,
-                    "dirt",
-                    "It's dirty.",
-                    2,
-                    7,
-                    "resources/items/miner/dirt.png"
-                ],
-                [
-                    0,
-                    "dirt",
-                    "It's dirty.",
-                    2,
-                    7,
-                    "resources/items/miner/dirt.png"
-                ],
-                [
-                    0,
-                    "dirt",
-                    "It's dirty.",
-                    2,
-                    7,
-                    "resources/items/miner/dirt.png"
+                    "resources/items/miner/dirt_comp.png"
                 ],
                 [
                     2,
