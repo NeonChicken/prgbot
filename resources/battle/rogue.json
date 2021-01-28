@@ -1,0 +1,248 @@
+{
+    "players": [
+        {
+            "name": "null"
+        },
+        {
+            "name": "235470435498590208",
+            "name_at_save": "NeonChicken",
+            "hp": 10,
+            "max_hp": 10,
+            "lvl": 1,
+            "xp": 0,
+            "gold": 0,
+            "equip": {
+                "head": [
+                    [
+                        "resources/items/helmet/helmet_1.png",
+                        "Iron Helmet",
+                        1,
+                        1,
+                        1,
+                        68,
+                        "This helmet was mass produced. Though it looks clean, it feels like it could fall apart at any moment..."
+                    ]
+                ],
+                "armor": [
+                    [
+                        "resources/items/armor/armor_2.png",
+                        "Rusty Chestguard",
+                        1,
+                        2,
+                        1,
+                        69,
+                        "Description"
+                    ]
+                ],
+                "handL": [
+                    [
+                        "resources/items/gloves/gloves_3.png",
+                        "Sausage Fingers",
+                        1,
+                        1,
+                        1,
+                        61,
+                        "Description"
+                    ]
+                ],
+                "handR": [
+                    [
+                        "resources/items/gloves/gloves_3.png",
+                        "Sausage Fingers",
+                        1,
+                        1,
+                        1,
+                        61,
+                        "Description"
+                    ]
+                ],
+                "pants": [
+                    [
+                        "resources/items/pants/pants_1.png",
+                        "Leather Legwraps",
+                        1,
+                        1,
+                        1,
+                        57,
+                        "Description"
+                    ]
+                ],
+                "bootL": [
+                    [
+                        "resources/items/boots/boots_4.png",
+                        "Worn Footpads",
+                        1,
+                        1,
+                        1,
+                        41,
+                        "Description"
+                    ]
+                ],
+                "bootR": [
+                    [
+                        "resources/items/boots/boots_4.png",
+                        "Worn Footpads",
+                        1,
+                        1,
+                        1,
+                        41,
+                        "Description"
+                    ]
+                ],
+                "ring1": [
+                    [
+                        "resources/items/ring/r3.png",
+                        "Magic Ring",
+                        1,
+                        1,
+                        1,
+                        30,
+                        "Description"
+                    ]
+                ],
+                "ring2": [
+                    [
+                        "resources/items/ring/r3.png",
+                        "Magic Ring",
+                        1,
+                        1,
+                        1,
+                        30,
+                        "Description"
+                    ]
+                ],
+                "weapon": [
+                    [
+                        "resources/items/sword/s13.png",
+                        "Rusty Dagger",
+                        1,
+                        1,
+                        2,
+                        90,
+                        "Description"
+                    ]
+                ],
+                "belt": [
+                    [
+                        "resources/items/belts/belts_2.png",
+                        "Leather Belt",
+                        1,
+                        1,
+                        1,
+                        68,
+                        "Description"
+                    ]
+                ]
+            },
+            "items": [
+                [
+                    "resources/items/gloves/gloves_3.png",
+                    "Sausage Fingers",
+                    1,
+                    1,
+                    1,
+                    89,
+                    "Description"
+                ],
+                [
+                    "resources/items/pants/pants_4.png",
+                    "Iron Breeches",
+                    3,
+                    5,
+                    1,
+                    18,
+                    "Description"
+                ],
+                [
+                    "resources/items/ring/r1.png",
+                    "Dragon Ring",
+                    4,
+                    4,
+                    2,
+                    44,
+                    "Description"
+                ]
+            ]
+        }
+    ],
+    "shop": [
+        {
+            "seed": 3152634,
+            "last_gen": "2021-01-28",
+            "items": [
+                [
+                    "resources/items/armor/armor_2.png",
+                    "Rusty Chestguard",
+                    1,
+                    2,
+                    1,
+                    45,
+                    "Description"
+                ],
+                [
+                    "resources/items/armor/armor_2.png",
+                    "Rusty Chestguard",
+                    1,
+                    2,
+                    1,
+                    45,
+                    "Description"
+                ],
+                [
+                    "resources/items/sword/s15.png",
+                    "Rusty Sword",
+                    1,
+                    1,
+                    2,
+                    32,
+                    "Description"
+                ],
+                [
+                    "resources/items/armor/armor_2.png",
+                    "Rusty Chestguard",
+                    1,
+                    2,
+                    1,
+                    45,
+                    "Description"
+                ],
+                [
+                    "resources/items/sword/s15.png",
+                    "Rusty Sword",
+                    1,
+                    1,
+                    2,
+                    32,
+                    "Description"
+                ],
+                [
+                    "resources/items/axe/a5.png",
+                    "Blunt Axe",
+                    1,
+                    2,
+                    2,
+                    59,
+                    "Description"
+                ],
+                [
+                    "resources/items/axe/a1.png",
+                    "Iron Labrys",
+                    2,
+                    4,
+                    2,
+                    99,
+                    "Description"
+                ],
+                [
+                    "resources/items/axe/a5.png",
+                    "Blunt Axe",
+                    1,
+                    2,
+                    2,
+                    59,
+                    "Description"
+                ]
+            ]
+        }
+    ]
+}

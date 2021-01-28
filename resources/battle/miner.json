@@ -1,0 +1,116 @@
+{
+    "players": [
+        {
+            "name": "null"
+        },
+        {
+            "name": "235470435498590208",
+            "name_at_save": "NeonChicken",
+            "total_times_mined": 7,
+            "inventory_tier": 0,
+            "pick_tier": 0,
+            "inventory": [
+                [
+                    0,
+                    "dirt",
+                    "It's dirty.",
+                    2,
+                    7,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "It's dirty.",
+                    2,
+                    7,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "It's dirty.",
+                    2,
+                    7,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "It's dirty.",
+                    2,
+                    7,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "It's dirty.",
+                    2,
+                    7,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "It's dirty.",
+                    2,
+                    7,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "It's dirty.",
+                    2,
+                    7,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "Some very dull looking stone...",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "Some very dull looking stone...",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    4,
+                    "iron",
+                    "*Very* useful!",
+                    1,
+                    2,
+                    "resources/items/miner/iron.png"
+                ]
+            ],
+            "crafting": [
+                [
+                    0,
+                    "compressed dirt",
+                    "resources/items/miner/dirt_comp.png",
+                    true
+                ],
+                [
+                    1,
+                    "compressed stone",
+                    "resources/items/miner/stone_comp.png",
+                    false
+                ],
+                [
+                    2,
+                    "compressed iron",
+                    "resources/items/miner/iron_comp.png",
+                    false
+                ]
+            ]
+        }
+    ]
+}
