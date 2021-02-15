@@ -119,7 +119,7 @@ async def run(client, message):
                     # custom teams:
                     # users = ['a', 'b', 'c']
                     user_amt = len(users)
-
+                    
                     # More teams than players
                     if (team_amt > user_amt):
                         await message.channel.send("{}, I cannot create **more teams than there are players**!\n".format(message.author.mention))
