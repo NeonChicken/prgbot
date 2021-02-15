@@ -5,6 +5,9 @@ import random
 async def run(client, message):
     if len(message.content.split()) < 2:
         await message.channel.send("{}, **PRG** bot commands:\n*(Enter the commands below to find out more!)*\n\n"
+                                   "***Commands:***\n"
+                                   "**!teams** - Create teams\n\n"
+                                   "**!vcteams** - Create teams from your voicechat channel\n\n"
                                    "***Random Games:***\n"
                                    "**!rp** - Roleplaying Game\n"
                                    "*Fight monsters, level up, earn gems, visit the shop and craft new swords!*\n"
