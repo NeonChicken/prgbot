@@ -114,8 +114,8 @@ async def run(client, message):
                 if message.author.voice and message.author.voice.channel:
                     channel = message.author.voice.channel
                     users = []
-                    for member in channel.members:
-                        users.append(member.name)
+                    for ids in channel.voice_states.keys():
+                        users.append("<@{}>".format(ids))
                     # custom teams:
                     # users = ['a', 'b', 'c']
                     user_amt = len(users)
