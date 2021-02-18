@@ -1,6 +1,5 @@
 venv
 __pycache__
-secrets.py
 .idea/vcs.xml
 resources/battle/log.json
 resources/battle/shop.json

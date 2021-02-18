@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
+import argparse
 import importlib
 import random
 
 import discord
 import asyncio
 
-from secrets import token
-
 from discord.ext import commands
+
+# Get bot token from running arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('token', help='Your Discord bot token. (Make one at www.discord.com/developers)', type=str)
+args = parser.parse_args()
+token = args.token
 
 client = discord.Client()
 prefix = '!'
