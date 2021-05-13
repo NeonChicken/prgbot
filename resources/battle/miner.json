@@ -6,8 +6,8 @@
         {
             "name": "235470435498590208",
             "name_at_save": "NeonChicken",
-            "total_times_mined": 7,
-            "inventory_tier": 0,
+            "total_times_mined": 21,
+            "inventory_tier": 1,
             "pick_tier": 0,
             "inventory": [
                 [
@@ -19,12 +19,12 @@
                     "resources/items/miner/dirt.png"
                 ],
                 [
+                    1,
+                    "compressed dirt",
+                    "Tightly packed dirt",
                     0,
-                    "dirt",
-                    "It's dirty.",
-                    2,
-                    7,
-                    "resources/items/miner/dirt.png"
+                    0,
+                    "resources/items/miner/dirt_comp.png"
                 ],
                 [
                     1,
@@ -51,12 +51,12 @@
                     "resources/items/miner/stone.png"
                 ],
                 [
-                    4,
-                    "iron",
-                    "*Very* useful!",
-                    1,
-                    2,
-                    "resources/items/miner/iron.png"
+                    5,
+                    "compressed iron",
+                    "Very heavy.",
+                    0,
+                    0,
+                    "resources/items/miner/iron_comp.png"
                 ]
             ],
             "crafting": [
@@ -64,21 +64,77 @@
                     0,
                     "compressed dirt",
                     "resources/items/miner/dirt_comp.png",
-                    true
+                    true,
+                    [
+                        [
+                            0,
+                            5
+                        ]
+                    ],
+                    1,
+                    [
+                        [
+                            0,
+                            5
+                        ]
+                    ]
                 ],
                 [
                     1,
                     "compressed stone",
                     "resources/items/miner/stone_comp.png",
-                    false
+                    true,
+                    [
+                        [
+                            1,
+                            2
+                        ],
+                        [
+                            2,
+                            3
+                        ]
+                    ],
+                    3,
+                    [
+                        [
+                            1,
+                            2
+                        ],
+                        [
+                            2,
+                            3
+                        ]
+                    ]
                 ],
                 [
                     2,
                     "compressed iron",
                     "resources/items/miner/iron_comp.png",
-                    false
+                    true,
+                    [
+                        [
+                            3,
+                            3
+                        ],
+                        [
+                            4,
+                            3
+                        ]
+                    ],
+                    5,
+                    [
+                        [
+                            3,
+                            3
+                        ],
+                        [
+                            4,
+                            3
+                        ]
+                    ]
                 ]
-            ]
+            ],
+            "research": []
         }
     ]
 }

@@ -14,13 +14,13 @@
             "equip": {
                 "head": [
                     [
-                        "resources/items/helmet/helmet_1.png",
-                        "Iron Helmet",
+                        "resources/items/helmet/helmet_2.png",
+                        "Viking Helmet",
                         1,
                         1,
                         1,
-                        68,
-                        "This helmet was mass produced. Though it looks clean, it feels like it could fall apart at any moment..."
+                        38,
+                        "There's some inscriptions on the back, but you can't make out what it means. You also see some blonde hairs stuck in a small wooden crevice."
                     ]
                 ],
                 "armor": [
@@ -28,9 +28,9 @@
                         "resources/items/armor/armor_2.png",
                         "Rusty Chestguard",
                         1,
-                        2,
                         1,
-                        69,
+                        1,
+                        23,
                         "Description"
                     ]
                 ],
@@ -41,7 +41,7 @@
                         1,
                         1,
                         1,
-                        61,
+                        87,
                         "Description"
                     ]
                 ],
@@ -52,7 +52,7 @@
                         1,
                         1,
                         1,
-                        61,
+                        87,
                         "Description"
                     ]
                 ],
@@ -63,7 +63,7 @@
                         1,
                         1,
                         1,
-                        57,
+                        99,
                         "Description"
                     ]
                 ],
@@ -74,7 +74,7 @@
                         1,
                         1,
                         1,
-                        41,
+                        65,
                         "Description"
                     ]
                 ],
@@ -85,51 +85,51 @@
                         1,
                         1,
                         1,
-                        41,
+                        65,
                         "Description"
                     ]
                 ],
                 "ring1": [
                     [
-                        "resources/items/ring/r3.png",
-                        "Magic Ring",
+                        "resources/items/ring/r10.png",
+                        "Rusty Ring",
                         1,
                         1,
                         1,
-                        30,
+                        84,
                         "Description"
                     ]
                 ],
                 "ring2": [
                     [
-                        "resources/items/ring/r3.png",
-                        "Magic Ring",
+                        "resources/items/ring/r10.png",
+                        "Rusty Ring",
                         1,
                         1,
                         1,
-                        30,
+                        84,
                         "Description"
                     ]
                 ],
                 "weapon": [
                     [
-                        "resources/items/sword/s13.png",
-                        "Rusty Dagger",
+                        "resources/items/sword/s15.png",
+                        "Rusty Sword",
                         1,
                         1,
                         2,
-                        90,
+                        52,
                         "Description"
                     ]
                 ],
                 "belt": [
                     [
-                        "resources/items/belts/belts_2.png",
-                        "Leather Belt",
+                        "resources/items/belts/belts_4.png",
+                        "Viking Belt",
                         1,
                         1,
                         1,
-                        68,
+                        49,
                         "Description"
                     ]
                 ]
