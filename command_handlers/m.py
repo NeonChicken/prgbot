@@ -308,7 +308,7 @@ async def run(client, message):
                                             await message.channel.send("{} found {} {}.\n{}".format(message.author.mention, r_pool_0_int, r_pool_0[1], r_pool_0[2]))
 
                                             unlock_mash = checkUnlock(p)
-                                            if unlock_mash is not 'resources/misc/empty320x320.png':
+                                            if unlock_mash != 'resources/misc/empty320x320.png':
                                                 await message.channel.send("{}".format(message.author.mention), file=discord.File(unlock_mash))
                                                 with open('./resources/battle/miner.json', 'w') as f:
                                                     json.dump(contents, f, indent=4)
@@ -332,7 +332,7 @@ async def run(client, message):
                                         await message.channel.send("{}, inventory has been filled.\n".format(message.author.mention) + getInv(p, True)[0], file=getInv(p, True)[1])
 
                                         unlock_mash = checkUnlock(p)
-                                        if unlock_mash is not 'resources/misc/empty320x320.png':
+                                        if unlock_mash != 'resources/misc/empty320x320.png':
                                             await message.channel.send("{}".format(message.author.mention), file=discord.File(unlock_mash))
                                             with open('./resources/battle/miner.json', 'w') as f:
                                                 json.dump(contents, f, indent=4)
@@ -667,7 +667,7 @@ async def run(client, message):
                                                                     file=getInv(p, True)[1])
 
                                                                 unlock_mash = checkUnlock(p)
-                                                                if unlock_mash is not 'resources/misc/empty320x320.png':
+                                                                if unlock_mash != 'resources/misc/empty320x320.png':
                                                                     await message.channel.send("{}".format(message.author.mention), file=discord.File(unlock_mash))
                                                                     with open('./resources/battle/miner.json', 'w') as f:
                                                                         json.dump(contents, f, indent=4)
