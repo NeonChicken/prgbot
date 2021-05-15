@@ -5,6 +5,7 @@ from PIL import Image, ImageFont, ImageDraw, ImageOps
 import json
 import os
 import io
+import math
 import datetime
 
 # MINE SIM
@@ -24,6 +25,13 @@ bp_tier_3 = 225
 data = {}
 data['players'] = []
 
+# todo check if multiple save files are necessary with users using at the same time
+
+# todo logging which upgrades where bought, time from start, time from finish in days, hours and minutes
+
+# todo print multiple unlocks in one big picture
+
+# todo upgrade description in picture
 
 # Create json file
 def create_json_player():
@@ -44,16 +52,24 @@ shadow_font_big = ImageFont.truetype("courbd.ttf", 18)
 shadow_offset = 2
 
 # Mine data
-#    0=ID,  1=Name,                 2=Description,                       3=min_amount,  4=max_amount,   5=image
+#    0=ID,  1=Name,                 2=Description,                                  3=min_amount,  4=max_amount,   5=image
 resources = [
-    [0,     "dirt",                 "It's dirty.",                       2,             7,              "resources/items/miner/dirt.png"],
-    [1,     "compressed dirt",      "Tightly packed dirt",               0,             0,              "resources/items/miner/dirt_comp.png"],
-    [2,     "stone",                "Some very dull looking stone...",   1,             5,              "resources/items/miner/stone.png"],
-    [3,     "compressed stone",     "Tightly packed stone",              0,             0,              "resources/items/miner/stone_comp.png"],
-    [4,     "iron",                 "*Very* useful!",                    1,             2,              "resources/items/miner/iron.png"],
-    [5,     "compressed iron",      "Very heavy.",                       0,             0,              "resources/items/miner/iron_comp.png"],
-    [6,     "gold",                 "*Shiny!*",                          1,             1,              "resources/items/miner/gold.png"],
-    [7,     "backpack 1",           "Spacious!",                         0,             0,              "resources/items/miner/bp1.png"]
+    [0,     "dirt",                 "*Tiny grains of rock and organic matter.*",    1,             3,              "resources/items/miner/dirt.png"],
+    [1,     "compressed dirt",      "*Tightly packed dirt.*",                       0,             0,              "resources/items/miner/dirt_comp.png"],
+    [2,     "stone",                "*A mass of hard, compacted mineral.*",         1,             5,              "resources/items/miner/stone.png"],
+    [3,     "compressed stone",     "*Tightly packed stone.*",                      0,             0,              "resources/items/miner/stone_comp.png"],
+    [4,     "iron",                 "*A malleable, silver-gray metal.*",            1,             4,              "resources/items/miner/iron.png"],
+    [5,     "compressed iron",      "*Very heavy.*",                                0,             0,              "resources/items/miner/iron_comp.png"],
+    [6,     "gold",                 "*What a surprise!*",                           1,             2,              "resources/items/miner/gold.png"],
+    [7,     "backpack 1",           "Spacious!",                                    0,             0,              "resources/items/miner/bp1.png"],
+    [8,     "backpack 2",           "Spacious!",                                    0,             0,              "resources/items/miner/bp2.png"],
+    [9,     "backpack 3",           "Spacious!",                                    0,             0,              "resources/items/miner/bp3.png"],
+    [10,     "auto miner",          "Very useful!\nMines until your inventory is filled.", 0,      0,              "resources/items/miner/pick2.png"],
+    [11,     "lucky upgrade",       "Big money!\nGet more rare items.",             0,             0,              "resources/items/miner/lucky.png"],
+    [12,     "haul upgrade",        "More stuff!\nMine larger veins.",              0,             0,              "resources/items/miner/pick.png"],
+    [13,     "fast crafter",        "Faster crafting!\nUpon crafting, compresses every material of that kind from your inventory", 0, 0, "resources/items/miner/crafter.png"],
+    [14,     "auto compressor",     "Automatic compression upon mining!",           0,             0,              "resources/items/miner/crafter2.png"],
+    [15,     "midas crown",         "Everything is gold!",                          0,             0,              "resources/items/miner/crown.png"]
     ]
 
 # Sprite data
@@ -64,19 +80,30 @@ sprites = [[0, "lock", "resources/items/miner/lock64.png"]]
 #    0=ID  1=Name           2=image                                 3=unlocked 4=recipe[[resource id, amount], [resource id, amount]]   5=ID    6=research_requirement[[resource id, amount]]
 crafting = [
     # Compressed dirt RECIPE                                                   (ID:0 x5)                                                ID      (ID:0 x5)
-    [0, "compressed dirt",  "resources/items/miner/dirt_comp.png",  False,     [[0, 5]],                                                1,      [[0, 5]]],
-    # Compressed stone RECIPE                                                  (ID:1 x2, ID:2 x3)                                       ID      (ID:1 x2, ID:2 x3)
-    [1, "compressed stone", "resources/items/miner/stone_comp.png", False,     [[1, 2], [2, 3]],                                        3,      [[1, 2], [2, 3]]],
+    [0, "compressed dirt",  "resources/items/miner/dirt_comp.png",  False,     [[0, 5]],                                                1,      [[0, 1]]],
+    # Compressed stone RECIPE                                                  (ID:1 x2, ID:2 x3)                                       ID      (ID:1 x1, ID:2 x1)
+    [1, "compressed stone", "resources/items/miner/stone_comp.png", False,     [[1, 2], [2, 3]],                                        3,      [[1, 1], [2, 1]]],
     # Compressed iron RECIPE                                                   (ID:3 x3, ID:4 x3)                                       ID      (ID:3 x3, ID:4 x3)
-    [2, "compressed iron",  "resources/items/miner/iron_comp.png",  False,     [[3, 3], [4, 3]],                                        5,      [[3, 3], [4, 3]]],
+    [2, "compressed iron",  "resources/items/miner/iron_comp.png",  False,     [[3, 2], [4, 3]],                                        5,      [[3, 1], [4, 1]]],
     # Name                                                                     Recipe (ID, AMT)                                         ID      Req (ID, AMT)
-    [3, "inventory upgrade 1",  "resources/items/miner/bp1.png",    False,     [[5, 1]],                                                7,      [[5, 1]]]
-    # TODO: inventory tier upgrade
-    # TODO: precision miner
+    [3, "inventory upgrade 1",  "resources/items/miner/bp1.png",    False,     [[5, 1]],                                                7,      [[5, 1]]],
+    # Name                                                                     Recipe (ID, AMT)                                         ID      Req (ID, AMT)
+    [4, "inventory upgrade 2",    "resources/items/miner/bp2.png",  False,     [[5, 4]],                                                8,      [[5, 4]]],
+    # Name                                                                     Recipe (ID, AMT)                                         ID      Req (ID, AMT)
+    [5, "inventory upgrade 3", "resources/items/miner/bp3.png",     False,     [[5, 10], [6, 5]],                                       9,      [[5, 10], [6, 5]]],
+    [6, "fast crafter",        "resources/items/miner/crafter.png", False,     [[5, 3]],                                                13,     [[5, 1]]],
+    [7, "auto miner",        "resources/items/miner/pick2.png",     False,     [[5, 2]],                                                10,     [[5, 1]]],
+    [8, "lucky upgrade",       "resources/items/miner/lucky.png",   False,     [[1, 10], [3, 5], [5, 3]],                               11,     [[5, 1]]],
+    [9, "haul upgrade",        "resources/items/miner/pick.png",    False,     [[5, 5], [6, 2]],                                        12,     [[5, 1], [6, 1]]],
+    [10, "auto compressor",     "resources/items/miner/crafter2.png", False,   [[5, 10], [6, 15]],                                      14,     [[5, 1], [6, 1]]],
+    [11, "midas crown",        "resources/items/miner/crown.png",   False,     [[5, 100], [6, 80]],                                     15,     [[5, 100], [6, 80]]]
 ]
 
 # First pool with selected items from resources * rarity/10000
-pool_0 = [[resources[0]] * 5000 + [resources[2]] * 3500 + [resources[4]] * 1499 + [resources[6]] * 1]
+pool_0 = [[resources[0]] * 200 + [resources[2]] * 90 + [resources[4]] * 40 + [resources[6]] * 1]
+pool_1 = [[resources[0]] * 600 + [resources[2]] * 150 + [resources[4]] * 30 + [resources[6]] * 1]
+pool_2 = [[resources[0]] * 300 + [resources[2]] * 75 + [resources[4]] * 50 + [resources[6]] * 10]
+pool_3 = [[resources[6]] * 25]
 
 # Mining Simulator
 async def run(client, message):
@@ -87,9 +114,12 @@ async def run(client, message):
         response =  "{}, welcome to **".format(message.author.mention) + prefix + "{}** ".format(commandname) + \
                     "miner!\n\nAfter **" + prefix + "{}** ".format(commandname) + "you can use:" \
                     "\n**mine** - Mine materials" \
+                    "\n**fill** - Mine until your inventory is full" \
                     "\n**inv** - See inventory" \
                     "\n**craft** - Craft materials" \
-                    "\n**dump** - Dump materials"
+                    "\n**dump** - Dump materials" \
+                    "\n\n**restart** - Start over *(deletes your save file)*"
+
         return response
 
     # loading save files
@@ -114,8 +144,21 @@ async def run(client, message):
                     elif str(message.author.id) is not str(p['name']) and do_not_create_save is not 1:
                         if count is int(len(contents['players'])):
                             contents['players'].append(
-                                {'name': '{}'.format(message.author.id), 'name_at_save': '{}'.format(message.author.name), 'total_times_mined': 0, 'inventory_tier': 0, 'pick_tier': 0, 'inventory': [],
-                                 'crafting': crafting, 'research': []})
+                                {
+                                    'name': '{}'.format(message.author.id),
+                                    'name_at_save': '{}'.format(message.author.name),
+                                    'total_times_mined': 0,
+                                    'inventory_tier': 0,
+                                    'lucky': False,
+                                    'haul': False,
+                                    'fast': False,
+                                    'miner': False,
+                                    'auto': False,
+                                    'midas': False,
+                                    'pick_tier': 0,
+                                    'inventory': [],
+                                    'crafting': crafting,
+                                    'research': []})
                             with open('./resources/battle/miner.json', 'w') as f:
                                 json.dump(contents, f, indent=4)
                             await message.channel.send('*Created a save file for {}.*'.format(message.author))
@@ -127,6 +170,20 @@ async def run(client, message):
 
                 # Game logic
                 elif len(message.content.split()) >= 2:
+                    if message.content.split()[1] != 'restart':
+                        for p in contents['players']:
+                            if str(message.author.id) == str(p['name']):
+                                # Check if player has won first
+                                if won(p):
+                                    filename = str(os.path.basename(__file__))
+                                    commandname = filename.replace('.py', '')
+                                    msg = "{}'s inventory contains:{}".format(message.author.mention, getInv(p, True)[0])
+                                    await message.channel.send(msg, file=getInv(p, True)[1])
+                                    msg = "{}, you have completed **".format(message.author.mention) + prefix + "{}** miner!".format(commandname) + " :trophy: :trophy: :trophy:"
+                                    msg += "\nYou can start over by typing **" + prefix + "{} restart**".format(commandname)
+                                    await message.channel.send(msg)
+                                    return
+
                     if message.content.split()[1] == 'inv':
                         for p in contents['players']:
                             if str(message.author.id) == str(p['name']):
@@ -135,43 +192,160 @@ async def run(client, message):
                                 # Write to player file
                                 with open('./resources/battle/miner.json', 'w') as f:
                                     json.dump(contents, f, indent=4)
-                                await message.channel.send("{}'s inventory contains:{}".format(message.author.mention, getInv(p, True)[0]), file=getInv(p, True)[1])
+                                msg = "{}'s inventory contains:{}".format(message.author.mention, getInv(p, True)[0])
+                                await message.channel.send(msg, file=getInv(p, True)[1])
                                 return
 
-                    if message.content.split()[1] == 'mine':
-                        for p in contents['players']:
+                    if message.content.split()[1] == 'restart':
+                        for idx, p in enumerate(contents['players']):
                             if str(message.author.id) == str(p['name']):
-                                # Check if inventory is full first
-                                if len(p["inventory"]) >= getBackpackTier(p):
-                                    await message.channel.send(
-                                        "{}, your inventory is full! *({}/{} items)*\nConsider using the commands:\n!m craft\n!m dump".format(message.author.mention, len(p["inventory"]), getBackpackTier(p)))
+                                await message.channel.send("{}, are you sure you want to restart? (Y/N)".format(message.author.mention))
+
+                                def check(msg):
+                                    return msg.author == message.author
+
+                                try:
+                                    msg = await client.wait_for('message', check=check, timeout=timeout_time)
+                                except asyncio.TimeoutError:
+                                    await message.channel.send("{}, you've waited too long!".format(message.author.mention))
                                     return
                                 else:
-                                    # Generate random item from pool 0
-                                    r_pool_0 = random.choice(pool_0[0])
-                                    # print(r_pool_0)
-                                    # Generate random amount of that item in the min-max range
-                                    r_pool_0_int = random.randrange(r_pool_0[3], r_pool_0[4])
-                                    # If generated amount will overencumber player, retract amount
-                                    if (r_pool_0_int + len(p["inventory"])) >= getBackpackTier(p):
-                                        r_pool_0_int = getBackpackTier(p) - len(p["inventory"])
-                                    # Add to total of times mined
-                                    p["total_times_mined"] = p["total_times_mined"] + 1
-                                    # Append generated item to inventory * random int min>max from item
-                                    for unused in range(r_pool_0_int):
-                                        p["inventory"].append(r_pool_0)
-                                    # Write to player file
-                                    with open('./resources/battle/miner.json', 'w') as f:
-                                        json.dump(contents, f, indent=4)
+                                    yes_list = ['y', 'yes', 'yea', 'yeah', 'ya']
+                                    no_list = ['n', 'no', 'nah', 'na']
 
-                                    await message.channel.send("{} found {} {}.\n{}".format(message.author.mention, r_pool_0_int, r_pool_0[1], r_pool_0[2]))
+                                    if msg.content.lower() in yes_list:
+                                        await message.channel.send("{}, **your save file will be reset**.\nAre you **really** sure you want to restart? (Y/N)".format(message.author.mention))
 
-                                    for unlock in checkUnlock(p):
-                                        await message.channel.send("{}".format(message.author.mention), file=discord.File("resources/misc/unlockID{}.png".format(unlock[0])))
+                                        def check(msg):
+                                            return msg.author == message.author
+
+                                        try:
+                                            msg = await client.wait_for('message', check=check, timeout=timeout_time)
+                                        except asyncio.TimeoutError:
+                                            await message.channel.send("{}, you've waited too long!".format(message.author.mention))
+                                            return
+                                        else:
+                                            if msg.content.lower() in yes_list:
+                                                contents['players'].pop(idx)
+                                                with open('./resources/battle/miner.json', 'w') as f:
+                                                    json.dump(contents, f, indent=4)
+
+                                                await message.channel.send("{}, **your save file has been deleted!**".format(message.author.mention))
+                                                return
+                                            elif msg.content.lower() in no_list:
+                                                await message.channel.send("{}, reset has been cancelled.".format(message.author.mention))
+                                                return
+                                            else:
+                                                await message.channel.send("{}, your message input wasn't recognized.\n*Reset has been cancelled.*".format(message.author.mention))
+                                                return
+                                    elif msg.content.lower() in no_list:
+                                        await message.channel.send("{}, reset has been cancelled.".format(message.author.mention))
+                                        return
+                                    else:
+                                        await message.channel.send("{}, your message input wasn't recognized.\n*Reset has been cancelled.*".format(message.author.mention))
+                                        return
+
+                    if message.content.split()[1] == 'mine' or message.content.split()[1] == 'fill':
+                        for p in contents['players']:
+                            if str(message.author.id) == str(p['name']):
+
+                                # Check if inventory is full first
+                                if len(p["inventory"]) >= getBackpackTier(p):
+                                    p["inventory"] = sorted(p["inventory"])
+                                    filename = str(os.path.basename(__file__))
+                                    commandname = filename.replace('.py', '')
+
+                                    await message.channel.send(
+                                        "{}, **your inventory is full!** *({}/{} items)*\nConsider **upgrading** your backpack, or using the commands:\n".format(
+                                            message.author.mention, len(p["inventory"]), getBackpackTier(p)) + prefix + "{} craft\n".format(commandname) + prefix + "{} dump".format(commandname)
+                                        + getInv(p, True)[0], file=getInv(p, True)[1])
+                                    return
+                                else:
+                                    if message.content.split()[1] == 'fill' and not p["miner"]:
+                                        await message.channel.send("{}, you can't use the **fill** command yet.\n*You have to unlock and craft the* ***autominer*** *first!*".format(message.author.mention))
+                                        return
+
+                                    while len(p["inventory"]) < getBackpackTier(p):
+                                        # Generate random item from pool 0, or pool 1 if player has lucky upgrade
+                                        if p["midas"]:
+                                            r_pool_0 = random.choice(pool_3[0])
+                                        elif p["lucky"]:
+                                            r_pool_0 = random.choice(pool_2[0])
+                                        elif p["inventory_tier"] >= 1:
+                                            r_pool_0 = random.choice(pool_1[0])
+                                        else:
+                                            r_pool_0 = random.choice(pool_0[0])
+                                        # Generate random amount of that item in the min-max range
+                                        r_pool_0_int = random.randrange(r_pool_0[3], r_pool_0[4] + 1)
+                                        if p["midas"]:
+                                            r_pool_0_int = random.randrange(1, 21)
+                                        # Increase haul, only half for dirt & stone, thrice for gold and iron
+                                        if p["haul"]:
+                                            if r_pool_0[0] is not 0 and r_pool_0[0] is not 2:
+                                                r_pool_0_int *= random.randrange(2, 4)
+                                            else:
+                                                r_pool_0_int *= 1.5
+                                                r_pool_0_int = math.floor(r_pool_0_int)
+                                        # If generated amount will overencumber player, retract amount
+                                        if (r_pool_0_int + len(p["inventory"])) >= getBackpackTier(p):
+                                            r_pool_0_int = getBackpackTier(p) - len(p["inventory"])
+                                        # Add to total of times mined
+                                        p["total_times_mined"] = p["total_times_mined"] + 1
+                                        # Append generated item to inventory * random int min>max from item
+                                        for unused in range(r_pool_0_int):
+                                            p["inventory"].append(r_pool_0)
+
+                                        if p["auto"]:
+                                            autoCraft(p)
+
+                                        p["inventory"] = sorted(p["inventory"])
+
+                                        if not message.content.split()[1] == 'fill':
+                                            # Write to player file
+                                            with open('./resources/battle/miner.json', 'w') as f:
+                                                json.dump(contents, f, indent=4)
+
+                                            await message.channel.send("{} found {} {}.\n{}".format(message.author.mention, r_pool_0_int, r_pool_0[1], r_pool_0[2]))
+
+                                            unlock_mash = checkUnlock(p)
+                                            if unlock_mash is not 'resources/misc/empty320x320.png':
+                                                await message.channel.send("{}".format(message.author.mention), file=discord.File(unlock_mash))
+                                                with open('./resources/battle/miner.json', 'w') as f:
+                                                    json.dump(contents, f, indent=4)
+
+                                            # Check if player has won first
+                                            if won(p):
+                                                filename = str(os.path.basename(__file__))
+                                                commandname = filename.replace('.py', '')
+                                                msg = "{}'s inventory contains:{}".format(message.author.mention, getInv(p, True)[0])
+                                                await message.channel.send(msg, file=getInv(p, True)[1])
+                                                msg = "{}, you have completed **".format(message.author.mention) + prefix + "{}** miner!".format(commandname) + " :trophy: :trophy: :trophy:"
+                                                msg += "\nYou can start over by typing **" + prefix + "{} restart**".format(commandname)
+                                                await message.channel.send(msg)
+                                                return
+                                            return
+                                    if message.content.split()[1] == 'fill':
+                                        # Write to player file
                                         with open('./resources/battle/miner.json', 'w') as f:
                                             json.dump(contents, f, indent=4)
 
-                                    return
+                                        await message.channel.send("{}, inventory has been filled.\n".format(message.author.mention) + getInv(p, True)[0], file=getInv(p, True)[1])
+
+                                        unlock_mash = checkUnlock(p)
+                                        if unlock_mash is not 'resources/misc/empty320x320.png':
+                                            await message.channel.send("{}".format(message.author.mention), file=discord.File(unlock_mash))
+                                            with open('./resources/battle/miner.json', 'w') as f:
+                                                json.dump(contents, f, indent=4)
+
+                                        # Check if player has won first
+                                        if won(p):
+                                            filename = str(os.path.basename(__file__))
+                                            commandname = filename.replace('.py', '')
+                                            msg = "{}, you have completed **".format(message.author.mention) + prefix + "{}** miner!".format(commandname) + " :trophy: :trophy: :trophy:"
+                                            msg += "\nYou can start over by typing **" + prefix + "{} restart**".format(commandname)
+                                            await message.channel.send(msg)
+                                            return
+                                        return
 
                     if message.content.split()[1] == 'dump':
                         for p in contents['players']:
@@ -267,9 +441,13 @@ async def run(client, message):
                     if message.content.split()[1] == 'craft':
                         for p in contents['players']:
                             if str(message.author.id) == str(p['name']):
+                                if p["midas"]:
+                                    await message.channel.send("{}, **there's nothing left for you to craft!**\n\n*You would turn it into gold anyways...*".format(message.author.mention))
+                                    return
 
-                                for unlock in checkUnlock(p):
-                                    await message.channel.send("{}".format(message.author.mention), file=discord.File("resources/misc/unlockID{}.png".format(unlock[0])))
+                                unlock_mash = checkUnlock(p)
+                                if unlock_mash != 'resources/misc/empty320x320.png':
+                                    await message.channel.send("{}".format(message.author.mention), file=discord.File(unlock_mash))
                                     with open('./resources/battle/miner.json', 'w') as f:
                                         json.dump(contents, f, indent=4)
 
@@ -281,7 +459,7 @@ async def run(client, message):
                                     elif crafts[3] == True:
                                         unlocked = unlocked + 1
                                         total = total + 1
-                                temp_msg = "{}, enter the **recipe's number** you'd like to craft.```css\nRecipes unlocked: {}/{}```".format(message.author.mention, unlocked, total)
+                                temp_msg = "{}, enter the **recipe's number** you'd like to craft/inspect.```css\nRecipes unlocked: {}/{}```".format(message.author.mention, unlocked, total)
                                 await message.channel.send(temp_msg, file=getCrafting(p))
 
                                 # Bool for checking value/index errors in the first response
@@ -309,7 +487,7 @@ async def run(client, message):
 
                                             # Check if this number is in the ID's
                                             id_list = []
-                                            for ids in crafting:
+                                            for ids in p["crafting"]:
                                                 if ids[0] not in id_list:
                                                     id_list.append(ids[0])
                                             if craft_idx not in id_list:
@@ -318,7 +496,7 @@ async def run(client, message):
 
                                             # Checking if player has NOT unlocked this recipe
                                             if p["crafting"][craft_idx][3] == False:
-                                                temp_msg = "{}, you haven't unlocked **{}** yet.\n\nTo **unlock** it, your backpack must contain:\n".format(message.author.mention, crafting[craft_idx][1].capitalize())
+                                                temp_msg = "{}, you haven't unlocked **{}** yet.\n\nTo **unlock** it, your backpack must contain:\n".format(message.author.mention, p["crafting"][craft_idx][1].capitalize())
                                                 # All crafting components
                                                 recipe_txt = []
                                                 for components in p["crafting"][craft_idx][6]:
@@ -334,12 +512,12 @@ async def run(client, message):
                                                 return
                                             else:
                                                 # Crafting recipe cost message
-                                                cost_msg = '{}, for **{}** you need:\n```css\n'.format(message.author.mention, crafting[craft_idx][1].capitalize())
+                                                cost_msg = '{}, to craft **{}** you need:\n```css\n'.format(message.author.mention, p["crafting"][craft_idx][1].capitalize())
 
                                                 # Check if player can craft this recipe
                                                 can_craft = True
                                                 owned_comps = []
-                                                requirements = crafting[craft_idx][4]
+                                                requirements = p["crafting"][craft_idx][4]
 
                                                 for idx, req_mat in enumerate(requirements):
                                                     # Appending required material ID to owned components
@@ -359,12 +537,28 @@ async def run(client, message):
                                                     if owned_comps[idx][1] < req_mat[1]:
                                                         can_craft = False
                                                 cost_msg = cost_msg + '```\n'
+
                                                 if can_craft == False:
-                                                    cost_msg = cost_msg + 'You do not have enough resources to craft **{}**.'.format(crafting[craft_idx][1].capitalize())
+                                                    cost_msg = cost_msg + 'You do not have enough resources to craft **{}**.'.format(p["crafting"][craft_idx][1].capitalize())
                                                     await message.channel.send(cost_msg)
                                                     return
                                                 else:
-                                                    cost_msg = cost_msg + 'Would you like to craft **{}**? (Y/N)'.format(crafting[craft_idx][1].capitalize())
+                                                    if p["fast"] and 'compressed' in p["crafting"][craft_idx][1]:
+                                                        # Creating a list to match requirements
+                                                        req_match_list = []
+                                                        for req_mat in requirements:
+                                                            for items in owned_comps:
+                                                                if req_mat[0] == items[0]:
+                                                                    req_match_list.append(math.floor(items[1] / req_mat[1]))
+                                                        # Lowest owned required amount will be how many the player can craft
+                                                        req_match_list.sort()
+                                                        craft_amt = req_match_list[0]
+                                                        cost_msg += 'You have a **fast crafter**.\n'
+                                                        cost_msg += 'Would you like to craft ***{}*** **{}**? (Y/N)'.format(craft_amt, p["crafting"][craft_idx][1].capitalize())
+
+                                                    else:
+                                                        cost_msg = cost_msg + 'Would you like to craft **{}**? (Y/N)'.format(p["crafting"][craft_idx][1].capitalize())
+
                                                     await message.channel.send(cost_msg)
 
                                                     def check(msg):
@@ -381,49 +575,111 @@ async def run(client, message):
 
                                                         if msg.content.lower() in yes_list:
 
-                                                            # Removing elements from a list whilst iterating over them calls for a while loop
-                                                            dupe_inv = p["inventory"]
-                                                            # Remove items from inv
-                                                            for req_mat in requirements:
-                                                                deleted = 0
-                                                                while deleted < req_mat[1]:
-                                                                    for items in dupe_inv:
-                                                                        if items[0] == req_mat[0]:
-                                                                            if deleted < req_mat[1]:
-                                                                                p["inventory"].remove(items)
-                                                                                deleted = deleted + 1
-                                                                            else:
-                                                                                break
+                                                            if p["fast"] and 'compressed' in p["crafting"][craft_idx][1]:
+                                                                # Removing elements from a list whilst iterating over them > while loop
+                                                                dupe_inv = p["inventory"]
+                                                                # Remove items from inv
+                                                                for fast_craft in range(craft_amt):
+                                                                    for req_mat in requirements:
+                                                                        deleted = 0
+                                                                        while deleted < req_mat[1]:
+                                                                            for items in dupe_inv:
+                                                                                if items[0] == req_mat[0]:
+                                                                                    if deleted < req_mat[1]:
+                                                                                        p["inventory"].remove(items)
+                                                                                        deleted = deleted + 1
+                                                                                    else:
+                                                                                        break
+                                                            else:
+                                                                # Removing elements from a list whilst iterating over them > while loop
+                                                                dupe_inv = p["inventory"]
+                                                                # Remove items from inv
+                                                                for req_mat in requirements:
+                                                                    deleted = 0
+                                                                    while deleted < req_mat[1]:
+                                                                        for items in dupe_inv:
+                                                                            if items[0] == req_mat[0]:
+                                                                                if deleted < req_mat[1]:
+                                                                                    p["inventory"].remove(items)
+                                                                                    deleted = deleted + 1
+                                                                                else:
+                                                                                    break
+
+                                                            craft_result = p["crafting"][craft_idx][1].capitalize()
+
+                                                            def bool_pop_reorder(upgrade):
+                                                                p[upgrade] = True
+                                                                # Pop recipe
+                                                                for idx, crafts in enumerate(p["crafting"]):
+                                                                    if crafts[5] == p["crafting"][craft_idx][5]:
+                                                                        p["crafting"].pop(idx)
+                                                                # Reorder ID's
+                                                                for idx, crafts in enumerate(p["crafting"]):
+                                                                    crafts[0] = idx
 
                                                             # Check if player crafted an upgrade
-                                                            if 'inventory' in crafting[craft_idx][1]:
+                                                            if 'inventory' in p["crafting"][craft_idx][1]:
                                                                 p['inventory_tier'] += 1
                                                                 for idx, crafts in enumerate(p["crafting"]):
-                                                                    if crafts[5] == crafting[craft_idx][5]:
+                                                                    if crafts[5] == p["crafting"][craft_idx][5]:
                                                                         p["crafting"].pop(idx)
-                                                                with open('./resources/battle/miner.json', 'w') as f:
-                                                                    json.dump(contents, f, indent=4)
+                                                                # Reorder ID's
+                                                                for idx, crafts in enumerate(p["crafting"]):
+                                                                    crafts[0] = idx
+                                                            elif 'fast' in p["crafting"][craft_idx][1]:
+                                                                bool_pop_reorder('fast')
+                                                            elif 'compressor' in p["crafting"][craft_idx][1]:
+                                                                bool_pop_reorder('auto')
+                                                                autoCraft(p)
+                                                                p["inventory"] = sorted(p["inventory"])
+                                                            elif 'lucky' in p["crafting"][craft_idx][1]:
+                                                                bool_pop_reorder('lucky')
+                                                            elif 'haul' in p["crafting"][craft_idx][1]:
+                                                                bool_pop_reorder('haul')
+                                                            elif 'miner' in p["crafting"][craft_idx][1]:
+                                                                bool_pop_reorder('miner')
+                                                            elif 'crown' in p["crafting"][craft_idx][1]:
+                                                                p['midas'] = True
+                                                                execute_midas(p)
                                                             else:
+                                                                # Add crafted item to players inventory
                                                                 # Check crafted item's resource id from crafting library
-                                                                p["inventory"].append(resources[crafting[craft_idx][5]])
+                                                                if p["fast"] and 'compressed' in p["crafting"][craft_idx][1]:
+                                                                    for fast_craft in range(craft_amt):
+                                                                        p["inventory"].append(resources[p["crafting"][craft_idx][5]])
+                                                                else:
+                                                                    p["inventory"].append(resources[p["crafting"][craft_idx][5]])
+
                                                             # Sort inv
                                                             p["inventory"] = sorted(p["inventory"])
+
+                                                            # Save
                                                             with open('./resources/battle/miner.json', 'w') as f:
                                                                 json.dump(contents, f, indent=4)
-                                                            await message.channel.send(
-                                                                "{} crafted **{}**.\nInventory now contains:{}".format(message.author.mention, crafting[craft_idx][1].capitalize(), getInv(p, True)[0]),
-                                                                file=getInv(p, True)[1])
-                                                            for unlock in checkUnlock(p):
-                                                                await message.channel.send("{}".format(message.author.mention), file=discord.File("resources/misc/unlockID{}.png".format(unlock[0])))
-                                                                with open('./resources/battle/miner.json', 'w') as f:
-                                                                    json.dump(contents, f, indent=4)
-                                                            return
+
+                                                            if p['midas']:
+                                                                await message.channel.send(
+                                                                    "{} crafted the **Midas Crown**! :trophy: :trophy: :trophy:\n*Everything has turned to gold*\n\n"
+                                                                    "Inventory now contains:{}".format(message.author.mention, getInv(p, True)[0]), file=getInv(p, True)[1])
+                                                            else:
+                                                                await message.channel.send(
+                                                                    "{} crafted **{}**.\nInventory now contains:{}".format(message.author.mention, craft_result, getInv(p, True)[0]),
+                                                                    file=getInv(p, True)[1])
+
+                                                                unlock_mash = checkUnlock(p)
+                                                                if unlock_mash is not 'resources/misc/empty320x320.png':
+                                                                    await message.channel.send("{}".format(message.author.mention), file=discord.File(unlock_mash))
+                                                                    with open('./resources/battle/miner.json', 'w') as f:
+                                                                        json.dump(contents, f, indent=4)
+                                                                return
+
                                                         elif msg.content.lower() in no_list:
-                                                            await message.channel.send("{} decided *not* to craft {} for now...".format(message.author.mention, crafting[craft_idx][1].capitalize()))
+                                                            await message.channel.send("{} decided *not* to craft {} for now...".format(message.author.mention,
+                                                                                                                                        p["crafting"][craft_idx][1].capitalize()))
                                                             return
                                                         else:
                                                             await message.channel.send("{} I can only accept 'yes' or 'no' answers (**Y**/**N**)\nResetting...".format(message.author.mention,
-                                                                                                                                                                       crafting[craft_idx][
+                                                                                                                                                                       p["crafting"][craft_idx][
                                                                                                                                                                            1].capitalize()))
                                                             return
 
@@ -454,6 +710,57 @@ def getBackpackTier(player):
         return bp_tier_2
     if player["inventory_tier"] == 3:
         return bp_tier_3
+
+def autoCraft(player):
+    IDs_to_craft = [0, 1, 2]  # AUTOCRAFT DIRT, STONE & IRON
+
+    for ID_to_craft in IDs_to_craft:
+        owned_comps = []
+        requirements = crafting[ID_to_craft][4]
+        craft_amt = 0
+
+        for idx, req_mat in enumerate(requirements):
+            # Appending required material ID to owned components
+            owned_amount = 0
+            # Searching for this material ID in players inventory
+            for items in player["inventory"]:
+                # If ID matches the component ID in owned_comps, add to owned components (owned_comps)
+                if items[0] == req_mat[0]:
+                    owned_amount += 1
+            owned_comps.append([req_mat[0], owned_amount])
+        # owned_comps outputs [ID, Player Inventory Amount]
+
+        for req_mats in requirements:
+            # Creating a list to match requirements
+            req_match_list = []
+            for req_mat in requirements:
+                for items in owned_comps:
+                    if req_mat[0] == items[0]:
+                        req_match_list.append(math.floor(items[1] / req_mat[1]))
+            # Lowest owned required amount will be how many the player can craft
+            req_match_list.sort()
+            craft_amt = req_match_list[0]
+
+        # Removing elements from a list whilst iterating over them > while loop
+        dupe_inv = player["inventory"]
+        # Remove items from inv
+        for auto_craft in range(craft_amt):
+            for req_mat in requirements:
+                deleted = 0
+                while deleted < req_mat[1]:
+                    for items in dupe_inv:
+                        if items[0] == req_mat[0]:
+                            if deleted < req_mat[1]:
+                                player["inventory"].remove(items)
+                                deleted = deleted + 1
+                            else:
+                                break
+
+        for auto_craft in range(craft_amt):
+            player["inventory"].append(resources[crafting[ID_to_craft][5]])
+
+    return
+
 
 
 # Returns unlocked recipes
@@ -504,6 +811,8 @@ def checkUnlock(player):
                     craft[3] = True
                     unlocked_something = True
 
+    print(things_unlocked)
+
     if unlocked_something:
         for unlock in things_unlocked:
             img_bg = Image.open('resources/misc/320x320unlock.png')
@@ -519,8 +828,91 @@ def checkUnlock(player):
 
             img_bg.save("resources/misc/unlockID{}.png".format(unlock[0]))
 
-    return things_unlocked
+        if len(things_unlocked) == 1:
+            for unlock in things_unlocked:
+                img_bg = Image.open("resources/misc/unlockID{}.png".format(unlock[0]))
+                return "resources/misc/unlockID{}.png".format(unlock[0])
+        elif len(things_unlocked) == 2:
+            img_bg = Image.open('resources/misc/empty640x320.png')
+            unlock_img_square_size = 320
+            for idx, unlock in enumerate(things_unlocked):
+                size = unlock_img_square_size
+                img_temp = Image.open("resources/misc/unlockID{}.png".format(unlock[0]))
+                img_bg.paste(img_temp, (size * idx, 0), img_temp)
+            img_bg.save("resources/misc/temp/m_temp_mashup_2_{}.png".format(player['name_at_save']))
+            return "resources/misc/temp/m_temp_mashup_2_{}.png".format(player['name_at_save'])
+        elif len(things_unlocked) == 3 or len(things_unlocked) == 4:
+            img_bg = Image.open('resources/misc/empty640x640.png')
+            unlock_img_square_size = 320
+            for idx, unlock in enumerate(things_unlocked):
+                size = unlock_img_square_size
+                img_temp = Image.open("resources/misc/unlockID{}.png".format(unlock[0]))
+                if idx == 0 or idx == 1:
+                    img_bg.paste(img_temp, (size * idx, 0), img_temp)
+                elif idx == 2:
+                    img_bg.paste(img_temp, (0, 320), img_temp)
+                elif idx == 3:
+                    img_bg.paste(img_temp, (320, 320), img_temp)
+            img_bg.save("resources/misc/temp/m_temp_mashup_4_{}.png".format(player['name_at_save']))
+            return "resources/misc/temp/m_temp_mashup_4_{}.png".format(player['name_at_save'])
+        elif len(things_unlocked) == 5 or len(things_unlocked) == 6:
+            img_bg = Image.open('resources/misc/empty640x960.png')
+            unlock_img_square_size = 320
+            for idx, unlock in enumerate(things_unlocked):
+                size = unlock_img_square_size
+                img_temp = Image.open("resources/misc/unlockID{}.png".format(unlock[0]))
+                if idx == 0 or idx == 1:
+                    img_bg.paste(img_temp, (size * idx, 0), img_temp)
+                elif idx == 2:
+                    img_bg.paste(img_temp, (0, size), img_temp)
+                elif idx == 3:
+                    img_bg.paste(img_temp, (size, size), img_temp)
+                elif idx == 4:
+                    img_bg.paste(img_temp, (0, size * 2), img_temp)
+                elif idx == 5:
+                    img_bg.paste(img_temp, (size, size * 2), img_temp)
+                else:
+                    img_bg.paste(img_temp, (0, size * 3), img_temp)
+            img_bg.save("resources/misc/temp/m_temp_mashup_5_{}.png".format(player['name_at_save']))
+            return "resources/misc/temp/m_temp_mashup_5_{}.png".format(player['name_at_save'])
+        elif len(things_unlocked) >= 7:
+            img_bg = Image.open('resources/misc/empty960x960.png')
+            unlock_img_square_size = 320
+            for idx, unlock in enumerate(things_unlocked):
+                size = unlock_img_square_size
+                img_temp = Image.open("resources/misc/unlockID{}.png".format(unlock[0]))
+                if idx == 0 or idx == 1 or idx == 2:
+                    img_bg.paste(img_temp, (size * idx, 0), img_temp)
+                elif idx == 3:
+                    img_bg.paste(img_temp, (0, size), img_temp)
+                elif idx == 4:
+                    img_bg.paste(img_temp, (size, size), img_temp)
+                elif idx == 5:
+                    img_bg.paste(img_temp, (size * 2, size), img_temp)
+                elif idx == 6:
+                    img_bg.paste(img_temp, (0, size * 2), img_temp)
+                elif idx == 7:
+                    img_bg.paste(img_temp, (size, size * 2), img_temp)
+                elif idx == 8:
+                    img_bg.paste(img_temp, (size * 2, size * 2), img_temp)
+                else:
+                    img_bg.paste(img_temp, (size * 3, size * 3), img_temp)
+            img_bg.save("resources/misc/temp/m_temp_mashup_5_{}.png".format(player['name_at_save']))
+            return "resources/misc/temp/m_temp_mashup_5_{}.png".format(player['name_at_save'])
 
+    else:
+        return 'resources/misc/empty320x320.png'
+
+def won(player):
+    if len(player["inventory"]) >= bp_tier_3 and player["midas"]:
+        return True
+    else:
+        return False
+
+def execute_midas(player):
+    for idx, item in enumerate(player["inventory"]):
+        # Turns everything into gold
+        player["inventory"][idx] = resources[6]
 
 def getCrafting(player):
     # amount of pixels per item in image
@@ -530,7 +922,11 @@ def getCrafting(player):
     px_times_width = 15
     px_times_height = 15
 
-    img_bg = Image.open('resources/misc/empty320x320.png')
+    img_bg = Image.open('resources/misc/empty384x640.png')
+    divided_space = len(crafting) / 2
+    add_width = 0
+    add = 1
+    other_side = False
 
     iterated = 0
     img_temp = None
@@ -540,6 +936,13 @@ def getCrafting(player):
         for y in range(px_times_width):
             for idx, crafts in enumerate(player["crafting"]):
                 if idx == iterated:
+                    if other_side:
+                        y -= idx - add
+                        add += 1
+                    if idx >= divided_space and add_width == 0:
+                        add_width += 320
+                        y = 0
+                        other_side = True
                     locked = ''
                     if crafts[3] == False:
                         img_temp = Image.open(sprites[0][2])
@@ -549,11 +952,11 @@ def getCrafting(player):
                         locked = ''
                         # Nearest Neighbor for crisp pixel-art
                         img_temp = img_temp.resize((64, 64), Image.NEAREST)
-                    img_bg.paste(img_temp, (x * px_per_item, y * px_per_item), img_temp)
+                    img_bg.paste(img_temp, (x * px_per_item + add_width, y * px_per_item), img_temp)
                     # Numbering
                     str_iter = str(iterated + 1) + ' '
-                    posX = x * px_per_item
-                    posX_s = x * px_per_item + shadow_offset
+                    posX = x * px_per_item + add_width
+                    posX_s = x * px_per_item + shadow_offset + add_width
                     posY = y * px_per_item
                     posY_s = y * px_per_item + shadow_offset
                     ImageDraw.Draw(img_bg).text((posX_s, posY_s), str_iter, (0, 0, 0), font=shadow_font)
@@ -567,9 +970,9 @@ def getCrafting(player):
 
                     break
 
-    img_bg.save("resources/misc/temp2.png")
+    img_bg.save("resources/misc/temp/m_temp_{}.png".format(player["name_at_save"]))
 
-    return discord.File("resources/misc/temp2.png")
+    return discord.File("resources/misc/temp/m_temp_{}.png".format(player["name_at_save"]))
 
 # player = p
 # recipe_txt =      [how many of the following material required for crafting, [ID, name]]
@@ -622,9 +1025,9 @@ def getRecipe(player, recipe_txt):
 
                     break
 
-    img_bg.save("resources/misc/temp2.png")
+    img_bg.save("resources/misc/temp/m_temp_{}.png".format(player["name_at_save"]))
 
-    return discord.File("resources/misc/temp2.png")
+    return discord.File("resources/misc/temp/m_temp_{}.png".format(player["name_at_save"]))
 
 # Function for getting player inventory
 # player = p from a loop: for p in contents['players']
@@ -724,10 +1127,10 @@ def getInv(player, allow_msg):
 
     msg += "```"
 
-    img_bg.save("resources/misc/temp2.png")
+    img_bg.save("resources/misc/temp/m_temp_{}.png".format(player["name_at_save"]))
 
     if allow_msg:
-        return [msg, discord.File("resources/misc/temp2.png")]
+        return [msg, discord.File("resources/misc/temp/m_temp_{}.png".format(player["name_at_save"]))]
     else:
         return items_in_inv_count_list
 
