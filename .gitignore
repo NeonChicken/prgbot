@@ -12,3 +12,4 @@ resources/battle/uno.json
 .idea/misc.xml
 resources/ranks/Player Inventory_2.psd
 resources/ranks/Player Inventory.psd
+secrets.py
