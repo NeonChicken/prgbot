@@ -6,38 +6,76 @@
         {
             "name": "235470435498590208",
             "name_at_save": "NeonChicken",
-            "total_times_mined": 21,
-            "inventory_tier": 1,
+            "total_times_mined": 7,
+            "inventory_tier": 0,
+            "lucky": false,
+            "haul": false,
+            "fast": false,
+            "miner": false,
+            "auto": false,
+            "midas": false,
             "pick_tier": 0,
             "inventory": [
                 [
                     0,
                     "dirt",
-                    "It's dirty.",
-                    2,
-                    7,
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
                     "resources/items/miner/dirt.png"
                 ],
                 [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
                     1,
-                    "compressed dirt",
-                    "Tightly packed dirt",
-                    0,
-                    0,
-                    "resources/items/miner/dirt_comp.png"
+                    3,
+                    "resources/items/miner/dirt.png"
                 ],
                 [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
                     1,
-                    "compressed dirt",
-                    "Tightly packed dirt",
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
                     0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
                     0,
-                    "resources/items/miner/dirt_comp.png"
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
                 ],
                 [
                     2,
                     "stone",
-                    "Some very dull looking stone...",
+                    "*A mass of hard, compacted mineral.*",
                     1,
                     5,
                     "resources/items/miner/stone.png"
@@ -45,18 +83,98 @@
                 [
                     2,
                     "stone",
-                    "Some very dull looking stone...",
+                    "*A mass of hard, compacted mineral.*",
                     1,
                     5,
                     "resources/items/miner/stone.png"
                 ],
                 [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
                     5,
-                    "compressed iron",
-                    "Very heavy.",
-                    0,
-                    0,
-                    "resources/items/miner/iron_comp.png"
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
                 ]
             ],
             "crafting": [
@@ -75,7 +193,7 @@
                     [
                         [
                             0,
-                            5
+                            1
                         ]
                     ]
                 ],
@@ -83,7 +201,7 @@
                     1,
                     "compressed stone",
                     "resources/items/miner/stone_comp.png",
-                    true,
+                    false,
                     [
                         [
                             1,
@@ -98,11 +216,11 @@
                     [
                         [
                             1,
-                            2
+                            1
                         ],
                         [
                             2,
-                            3
+                            1
                         ]
                     ]
                 ],
@@ -110,11 +228,11 @@
                     2,
                     "compressed iron",
                     "resources/items/miner/iron_comp.png",
-                    true,
+                    false,
                     [
                         [
                             3,
-                            3
+                            2
                         ],
                         [
                             4,
@@ -125,11 +243,612 @@
                     [
                         [
                             3,
+                            1
+                        ],
+                        [
+                            4,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    3,
+                    "inventory upgrade 1",
+                    "resources/items/miner/bp1.png",
+                    false,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ],
+                    7,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    4,
+                    "inventory upgrade 2",
+                    "resources/items/miner/bp2.png",
+                    false,
+                    [
+                        [
+                            5,
+                            4
+                        ]
+                    ],
+                    8,
+                    [
+                        [
+                            5,
+                            4
+                        ]
+                    ]
+                ],
+                [
+                    5,
+                    "inventory upgrade 3",
+                    "resources/items/miner/bp3.png",
+                    false,
+                    [
+                        [
+                            5,
+                            10
+                        ],
+                        [
+                            6,
+                            5
+                        ]
+                    ],
+                    9,
+                    [
+                        [
+                            5,
+                            10
+                        ],
+                        [
+                            6,
+                            5
+                        ]
+                    ]
+                ],
+                [
+                    6,
+                    "fast crafter",
+                    "resources/items/miner/crafter.png",
+                    false,
+                    [
+                        [
+                            5,
                             3
+                        ]
+                    ],
+                    13,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    7,
+                    "auto miner",
+                    "resources/items/miner/pick2.png",
+                    false,
+                    [
+                        [
+                            5,
+                            2
+                        ]
+                    ],
+                    10,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    8,
+                    "lucky upgrade",
+                    "resources/items/miner/lucky.png",
+                    false,
+                    [
+                        [
+                            1,
+                            10
+                        ],
+                        [
+                            3,
+                            5
+                        ],
+                        [
+                            5,
+                            3
+                        ]
+                    ],
+                    11,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    9,
+                    "haul upgrade",
+                    "resources/items/miner/pick.png",
+                    false,
+                    [
+                        [
+                            5,
+                            5
+                        ],
+                        [
+                            6,
+                            2
+                        ]
+                    ],
+                    12,
+                    [
+                        [
+                            5,
+                            1
+                        ],
+                        [
+                            6,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    10,
+                    "auto compressor",
+                    "resources/items/miner/crafter2.png",
+                    false,
+                    [
+                        [
+                            5,
+                            10
+                        ],
+                        [
+                            6,
+                            15
+                        ]
+                    ],
+                    14,
+                    [
+                        [
+                            5,
+                            1
+                        ],
+                        [
+                            6,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    11,
+                    "midas crown",
+                    "resources/items/miner/crown.png",
+                    false,
+                    [
+                        [
+                            5,
+                            100
+                        ],
+                        [
+                            6,
+                            80
+                        ]
+                    ],
+                    15,
+                    [
+                        [
+                            5,
+                            100
+                        ],
+                        [
+                            6,
+                            80
+                        ]
+                    ]
+                ]
+            ],
+            "research": []
+        },
+        {
+            "name": "843183310108885022",
+            "name_at_save": "neonpollo",
+            "total_times_mined": 5,
+            "inventory_tier": 0,
+            "lucky": false,
+            "haul": false,
+            "fast": false,
+            "miner": false,
+            "auto": false,
+            "midas": false,
+            "pick_tier": 0,
+            "inventory": [
+                [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    0,
+                    "dirt",
+                    "*Tiny grains of rock and organic matter.*",
+                    1,
+                    3,
+                    "resources/items/miner/dirt.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ],
+                [
+                    2,
+                    "stone",
+                    "*A mass of hard, compacted mineral.*",
+                    1,
+                    5,
+                    "resources/items/miner/stone.png"
+                ]
+            ],
+            "crafting": [
+                [
+                    0,
+                    "compressed dirt",
+                    "resources/items/miner/dirt_comp.png",
+                    true,
+                    [
+                        [
+                            0,
+                            5
+                        ]
+                    ],
+                    1,
+                    [
+                        [
+                            0,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    1,
+                    "compressed stone",
+                    "resources/items/miner/stone_comp.png",
+                    false,
+                    [
+                        [
+                            1,
+                            2
+                        ],
+                        [
+                            2,
+                            3
+                        ]
+                    ],
+                    3,
+                    [
+                        [
+                            1,
+                            1
+                        ],
+                        [
+                            2,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    2,
+                    "compressed iron",
+                    "resources/items/miner/iron_comp.png",
+                    false,
+                    [
+                        [
+                            3,
+                            2
                         ],
                         [
                             4,
                             3
+                        ]
+                    ],
+                    5,
+                    [
+                        [
+                            3,
+                            1
+                        ],
+                        [
+                            4,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    3,
+                    "inventory upgrade 1",
+                    "resources/items/miner/bp1.png",
+                    false,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ],
+                    7,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    4,
+                    "inventory upgrade 2",
+                    "resources/items/miner/bp2.png",
+                    false,
+                    [
+                        [
+                            5,
+                            4
+                        ]
+                    ],
+                    8,
+                    [
+                        [
+                            5,
+                            4
+                        ]
+                    ]
+                ],
+                [
+                    5,
+                    "inventory upgrade 3",
+                    "resources/items/miner/bp3.png",
+                    false,
+                    [
+                        [
+                            5,
+                            10
+                        ],
+                        [
+                            6,
+                            5
+                        ]
+                    ],
+                    9,
+                    [
+                        [
+                            5,
+                            10
+                        ],
+                        [
+                            6,
+                            5
+                        ]
+                    ]
+                ],
+                [
+                    6,
+                    "fast crafter",
+                    "resources/items/miner/crafter.png",
+                    false,
+                    [
+                        [
+                            5,
+                            3
+                        ]
+                    ],
+                    13,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    7,
+                    "auto miner",
+                    "resources/items/miner/pick2.png",
+                    false,
+                    [
+                        [
+                            5,
+                            2
+                        ]
+                    ],
+                    10,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    8,
+                    "lucky upgrade",
+                    "resources/items/miner/lucky.png",
+                    false,
+                    [
+                        [
+                            1,
+                            10
+                        ],
+                        [
+                            3,
+                            5
+                        ],
+                        [
+                            5,
+                            3
+                        ]
+                    ],
+                    11,
+                    [
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    9,
+                    "haul upgrade",
+                    "resources/items/miner/pick.png",
+                    false,
+                    [
+                        [
+                            5,
+                            5
+                        ],
+                        [
+                            6,
+                            2
+                        ]
+                    ],
+                    12,
+                    [
+                        [
+                            5,
+                            1
+                        ],
+                        [
+                            6,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    10,
+                    "auto compressor",
+                    "resources/items/miner/crafter2.png",
+                    false,
+                    [
+                        [
+                            5,
+                            10
+                        ],
+                        [
+                            6,
+                            15
+                        ]
+                    ],
+                    14,
+                    [
+                        [
+                            5,
+                            1
+                        ],
+                        [
+                            6,
+                            1
+                        ]
+                    ]
+                ],
+                [
+                    11,
+                    "midas crown",
+                    "resources/items/miner/crown.png",
+                    false,
+                    [
+                        [
+                            5,
+                            100
+                        ],
+                        [
+                            6,
+                            80
+                        ]
+                    ],
+                    15,
+                    [
+                        [
+                            5,
+                            100
+                        ],
+                        [
+                            6,
+                            80
                         ]
                     ]
                 ]
