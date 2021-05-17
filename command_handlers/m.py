@@ -44,10 +44,10 @@ def create_json_player():
             json.dump(first_log, f, indent=4)
 
 # courier new is monospace (even spaced characters)
-font = ImageFont.truetype("courbd.ttf", 12)
-shadow_font = ImageFont.truetype("courbd.ttf", 12)
-font_big = ImageFont.truetype("courbd.ttf", 18)
-shadow_font_big = ImageFont.truetype("courbd.ttf", 18)
+font = ImageFont.truetype("./resources/misc/fonts/courbd.ttf", 12)
+shadow_font = ImageFont.truetype("./resources/misc/fonts/courbd.ttf", 12)
+font_big = ImageFont.truetype("./resources/misc/fonts/courbd.ttf", 18)
+shadow_font_big = ImageFont.truetype("./resources/misc/fonts/courbd.ttf", 18)
 # amount of pixels to offset shadow in text
 shadow_offset = 2
 
