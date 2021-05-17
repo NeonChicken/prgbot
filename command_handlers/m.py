@@ -91,11 +91,11 @@ crafting = [
     [4, "inventory upgrade 2",    "resources/items/miner/bp2.png",  False,     [[5, 4]],                                                8,      [[5, 4]]],
     # Name                                                                     Recipe (ID, AMT)                                         ID      Req (ID, AMT)
     [5, "inventory upgrade 3", "resources/items/miner/bp3.png",     False,     [[5, 10], [6, 5]],                                       9,      [[5, 10], [6, 5]]],
-    [6, "fast crafter",        "resources/items/miner/crafter.png", False,     [[5, 3]],                                                13,     [[5, 1]]],
+    [6, "fast crafter",        "resources/items/miner/crafter.png", False,     [[5, 2]],                                                13,     [[5, 1]]],
     [7, "auto miner",        "resources/items/miner/pick2.png",     False,     [[5, 2]],                                                10,     [[5, 1]]],
     [8, "lucky upgrade",       "resources/items/miner/lucky.png",   False,     [[1, 10], [3, 5], [5, 3]],                               11,     [[5, 1]]],
     [9, "haul upgrade",        "resources/items/miner/pick.png",    False,     [[5, 5], [6, 2]],                                        12,     [[5, 1], [6, 1]]],
-    [10, "auto compressor",     "resources/items/miner/crafter2.png", False,   [[5, 10], [6, 15]],                                      14,     [[5, 1], [6, 1]]],
+    [10, "auto compressor",     "resources/items/miner/crafter2.png", False,   [[5, 10], [6, 15]],                                      14,     [[5, 10], [6, 15]]],
     [11, "midas crown",        "resources/items/miner/crown.png",   False,     [[5, 100], [6, 80]],                                     15,     [[5, 100], [6, 80]]]
 ]
 
@@ -459,7 +459,7 @@ async def run(client, message):
                                     elif crafts[3] == True:
                                         unlocked = unlocked + 1
                                         total = total + 1
-                                temp_msg = "{}, enter the **recipe's number** you'd like to craft/inspect.```css\nRecipes unlocked: {}/{}```".format(message.author.mention, unlocked, total)
+                                temp_msg = "{}, enter the **recipe's number** you'd like to craft.\nYou can also *inspect locked recipes.* ```css\nRecipes unlocked: {}/{}```".format(message.author.mention, unlocked, total)
                                 await message.channel.send(temp_msg, file=getCrafting(p))
 
                                 # Bool for checking value/index errors in the first response
