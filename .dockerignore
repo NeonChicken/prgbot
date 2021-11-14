@@ -1,0 +1,12 @@
+venv
+__pycache__
+.idea/vcs.xml
+resources/battle/log.json
+resources/battle/shop.json
+resources/battle/casino.json
+resources/battle/fish.json
+resources/battle/uno.json
+.idea/PythonShit.iml
+.idea/misc.xml
+resources/ranks/Player Inventory_2.psd
+resources/ranks/Player Inventory.psd
