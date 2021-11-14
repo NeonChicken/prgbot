@@ -1,6 +1,6 @@
 import random
 
-async def run(message):
+async def run(client, message):
     if len(message.content.split()) < 2:
 
         value_list = list(range(2,11)) + ['jack', 'queen', 'king', 'ace']

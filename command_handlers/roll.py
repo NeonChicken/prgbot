@@ -2,7 +2,7 @@ import random
 from .insultme import generate_insult
 
 #Roll an n-sided die
-async def run(message):
+async def run(client, message):
     if len(message.content.split()) < 2:
         sides = 6
     elif len(message.content.split()) == 2:

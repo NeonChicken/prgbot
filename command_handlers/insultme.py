@@ -1,6 +1,6 @@
 import random
 
-async def run(message):
+async def run(client, message):
     response = generate_insult().capitalize()
     await message.channel.send(response)
 
