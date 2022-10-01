@@ -14,19 +14,18 @@ We will be using the Python package [discord.py](https://discordpy.readthedocs.i
 ### Running your own test server
 
 1. Clone or download this repository to your computer.
-2. In the root of the repository, create a file called `secrets.py` and paste the following line into it:<br>`token = ''`
-3. In Discord, create your own Discord server where you want to test the bot, if you haven't already done so.
-4. Log in to your Discord account on discordapp.com/developers.
-5. Click 'New Application'.
-6. Choose a name for your bot and click 'Create'.
-7. In the menu on the left, click 'Bot'.
-8. Click 'Add Bot' and confirm you want to do this by clicking 'Yes, do it!'.
-9.  Under 'Token', click 'Copy'.
-10. Paste your token between the quotes in the `secrets.py` file you made earlier, so that the contents of the file look like this:<br>```token = 'yourtoken'```
-11. Back in your Application settings on the Discord website, click on 'OAuth2' and check the 'bot' box under 'Scopes'. 
-12. Under 'Bot permissions', you can specify which permissions your bot will need. If you are only going to run the bot on your own Discord server, it won't hurt to give your bot admin rights. To do so, check the 'Administrator' box.
-13. Under 'Scopes, you will now see your bot's invite link. Paste this link in the address bar of your browser to invite the bot. Choose your server and click 'Continue'. Check the 'Administrator' box and click 'Authorize'. Click 'I am not a robot' to continue.
-14. Now, start your bot server with `python3 PRGbot.py`, and you can use to bot in your Discord server!
+2. In Discord, create your own Discord server where you want to test the bot, if you haven't already done so.
+3. Log in to your Discord account on discordapp.com/developers.
+4. Click 'New Application'.
+5. Choose a name for your bot and click 'Create'.
+6. In the menu on the left, click 'Bot'.
+7. Click 'Add Bot' and confirm you want to do this by clicking 'Yes, do it!'.
+8. Under 'Token', click 'Copy'.
+9. Store your token in an environment variable called `TOKEN`: `export TOKEN=<your-token>`
+10. Back in your Application settings on the Discord website, click on 'OAuth2' and check the 'bot' box under 'Scopes'. 
+11. Under 'Bot permissions', you can specify which permissions your bot will need. If you are only going to run the bot on your own Discord server, it won't hurt to give your bot admin rights. To do so, check the 'Administrator' box.
+12. Under 'Scopes, you will now see your bot's invite link. Paste this link in the address bar of your browser to invite the bot. Choose your server and click 'Continue'. Check the 'Administrator' box and click 'Authorize'. Click 'I am not a robot' to continue.
+13. Now, start your bot server with `python3 PRGbot.py`, and you can use to bot in your Discord server!
 
 ## Authors
 - **Marco Breemhaar** - *Framework* - www.marcobreemhaar.nl

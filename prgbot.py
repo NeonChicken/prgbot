@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse
+import os
 import importlib
 import random
 
@@ -9,14 +9,11 @@ import asyncio
 from discord.ext import commands
 
 # Get bot token from running arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('token', help='Your Discord bot token. (Make one at www.discord.com/developers)', type=str)
-args = parser.parse_args()
-token = args.token
 
 client = discord.Client()
 prefix = '!'
 playing = ['Random Games']
+token = os.environ.get('TOKEN')
 
 
 @client.event
