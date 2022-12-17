@@ -381,16 +381,20 @@ async def run(client, message):
 
             year = ''
             try:
+                years = range(2018, 2200)
+                str_years = []
+                for i in years:
+                    str_years.append(f"{i}")
+
                 if message.content.split()[2].lower() == 'na' or message.content.split()[2].lower() == 'n/a':
                     year = 'n/a'
                 elif message.content.split()[2].lower() == 'all':
                     year = 'all'
                 elif message.content.split()[2].isdigit():
-                    if message.content.split()[2] == '2018' or message.content.split()[2] == '2019' or \
-                            message.content.split()[2] == '2020' or message.content.split()[2] == '2021':
+                    if message.content.split()[2] in str_years:
                         year = int(message.content.split()[2])
                     else:
-                        response = "I can only accept **2018** | **2019** | **2020** | **2021** | **N/A** | **ALL**/*****"
+                        response = "I can only accept: **2018+** | **N/A** | **ALL**"
                         await message.channel.send(response)
                         return
             except IndexError:
